@@ -18,6 +18,9 @@ const hashData = async (data, saltRound = 10) => {
 
       const match = await bcrypt.compare(unhashed,hashed)
       return match
+      if(match === false){
+        console.log('Password not Match ')
+      }
     } catch (error) {
       throw error
     }

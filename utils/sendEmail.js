@@ -3,35 +3,35 @@ const env = require('dotenv').config()
 const {AUTH_EMAIL, AUTH_PASS } = process.env
 
 
-let transport = nodemailer.createTransport({
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'sh.hafizhasnain@gmail.com',
+    pass: 'kmskfcjdnewqidbl'
+  }
+});
 
-    host:"smtp-mail.outlook.com",
-    auth:{
-        user:AUTH_EMAIL,
-        pass:AUTH_PASS
-    }
-})
+transporter.verify((success,err)=>{
 
-transport.verify((success,err)=>{
-
-if(err){
-    console.log(err)
-}else{
-    console.log('Ready for message ')
-    console.log(success)
-}
-
-
-})
-
+  if(err){
+      console.log(err)
+  }else{
+      console.log('Ready for message ')
+      console.log(success)
+  }
+  
+  
+  })
 const sendEmail = async (mailOptions)=>{
+ await transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+   console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+      // do something useful
+    }
+  });
 
-try {
-    await transport.sendMail(mailOptions)
-    return
-} catch (error) {
-    throw error
-}
 
 }
 module.exports = sendEmail 
