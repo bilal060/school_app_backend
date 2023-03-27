@@ -31,7 +31,6 @@ const userSchema = new Schema({
   },
   istrue :{
     type:Boolean,
-    default:false
   },
   
 });

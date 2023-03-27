@@ -77,7 +77,7 @@ const getAllusers = async (req, res, next) => {
   });
 };
 const userSignUp = async (req, res, next) => {
-  let { name, email, phone, password } = req.body ;
+  let { name, email, phone, password , } = req.body ;
   name = name.trim()
   email = email.trim()
   phone = phone.trim()
