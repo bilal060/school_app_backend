@@ -22,10 +22,15 @@ app.use('',Alertrouter)
 
 
 mongoose.set('strictQuery', true)
-mongoose.connect('mongodb://localhost:27017/SchoolAppBackend')
+mongoose.connect('mongodb://localhost:27017/SchoolAppBackend',{
+    // useNewUrlParser: true,
+    // useUnifiedTopology: true,
+    // useCreateIndex: true,
+    // useFindAndModify: false
+})
 .then(()=>{
     app.listen(PORT,()=>{
-        console.log(`Connect App listen on port ${PORT}`)
+        console.log(`Connect With DB or App listen on port ${PORT}`)
     })
 }).catch((err)=>{
 console.log(err);

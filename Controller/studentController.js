@@ -55,41 +55,47 @@ const getStudennts =async (req, res) => {
 }
  
 const getStudent = async (req, res) => {
+  const studentId = req.params.id;
   try {
-    const student = await Student.findById(req.params.id);
+    const student = await Student.findOne({ studentId });
     if (!student) {
-      return res.status(404).send();
+      return res.status(404).json({ message: "Student not found" });
     }
-    res.send(student);
-  } catch (err) {
-    res.status(500).send(err);
+    const formattedStudentId = student.studentId.toString().padStart(6, "0");
+    res.json({ Student: { ...student.toJSON(), formattedStudentId } });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 }
 const updateStudent = async (req, res) => {
+  const studentId = req.params.id;
+  const updateData = req.body;
   try {
-    const student = await Student.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const student = await Student.findOneAndUpdate({ studentId }, updateData, {
+      new: true
+    });
     if (!student) {
-      return res.status(404).send();
+      return res.status(404).json({ message: "Student not found" });
     }
-    res.send(student);
-  } catch (err) {
-    res.status(500).send(err);
+    const formattedStudentId = student.studentId.toString().padStart(6, "0");
+    res.json({ Student: { ...student.toJSON(), formattedStudentId } });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 }
 const deleteStudent = async (req, res) => {
+  const studentId = req.params.id;
   try {
-    const student = await Student.findByIdAndDelete(req.params.id);
+    const student = await Student.findOneAndDelete({ studentId });
     if (!student) {
-      return res.status(404).send();
+      return res.status(404).json({ message: "Student not found" });
     }
-    res.status(200).json({
-
-'message':'record deleted succesfully',
-student:student
-
-    });
-  } catch (err) {
-    res.status(500).send(err);
+    res.json({ message: "Student deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 }
 
