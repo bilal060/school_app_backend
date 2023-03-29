@@ -1,6 +1,6 @@
 const express = require('express')
 const mongoose = require('mongoose');
-const router = require('./routes/user-routes');
+const Userrouter = require('./routes/user-routes');
 const emailRouter = require('./routes/emailRoute');
 const passRouter = require('./routes/forgotpassRoute');
 const app = express();
@@ -12,7 +12,7 @@ const Studentrouter = require('./routes/studentRoute')
 const Alertrouter = require('./routes/AlertRoute')
 
 app.use(express.json())
-app.use('',router)
+app.use('',Userrouter)
 app.use('',otpRouter)
 app.use('',emailRouter)
 app.use('',passRouter)
