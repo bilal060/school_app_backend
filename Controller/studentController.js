@@ -20,7 +20,6 @@ const CreateStudent = async (req, res) => {
   }
   const Poststudent = await Student.create({
     fullName,
-    // studentId,
     grade,
     contactNo,
     emergencyContactNo,

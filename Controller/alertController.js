@@ -1,50 +1,59 @@
 const { findByIdAndRemove, findById, findOne } = require("../Model/User");
-const Alert = require("../Model/alert");
+const Alerts = require("../Model/alert");
+const moment = require('moment');
+
 
 const CreateAlert = async (req, res) => {
   try {
-    const { Alert, Location, AlertReason, AlertPrority } = req.body;
-    // Alert = Alert.trim();
-    // Location = Location.trim();
-    // AlertReason = AlertReason.trim();
-    // AlertPrority = AlertPrority.trim();
-    // if (
-    //   !(
-    //     Alert ||
-    //     Location ||
-    //     AlertReason ||
-    //     AlertPrority 
-    //   )
-    // ) {
-    //   return res.status(500).json({
-    //     message: "Internal server Error",
-    //   });
-    // }
-    const newAlert = new Alert({
+    let { Alert, Location, AlertReason, AlertPrority } = req.body;
+    Alert = Alert.trim();
+    Location = Location.trim();
+    AlertReason = AlertReason.trim();
+    AlertPrority = AlertPrority.trim();
+    if (
+      !(
+        Alert ||
+        Location ||
+        AlertReason ||
+        AlertPrority 
+      )
+    ) {
+      return res.status(500).json({
+        message: "Internal server Error",
+      });
+    }
+    const newDoc = new Alerts({
       Alert,
       Location,
       AlertReason,
       AlertPrority,
-      // Set default values for createDate and createTime fields
     });
-    const savedAlert = await newAlert.save();
-    if (!savedAlert) {
+    newDoc.save()
+    .then(doc => {
+      console.log(doc); // the date without time
+    })
+    .catch(err => {
+      console.error(err);
+    });
+
+    if (!newDoc) {
       return res.status(500).json({
         message: "user Error",
       });
     }
+
     return res.status(201).json({
-      savedAlert: savedAlert,
+      savedAlert: newDoc,
     });
   } catch (err) {
     throw err;
   }
 };
 
-const getStudennts = async (req, res) => {
+const getAlerts = async (req, res) => {
   try {
-    const Alerts = await Alert.find();
-    res.json(Alerts);
+    const AllAlerts = await Alerts.find();
+    res.status(200).json(AllAlerts);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to get Alerts" });
@@ -53,7 +62,7 @@ const getStudennts = async (req, res) => {
 
 const getAlert = async (req, res) => {
   try {
-    const Alert = await Alert.findById(req.params.id);
+    const Alert = await Alerts.findById(req.params.id);
     if (!Alert) {
       return res.status(404).send();
     }
@@ -64,20 +73,20 @@ const getAlert = async (req, res) => {
 };
 const updateAlert = async (req, res) => {
   try {
-    const Alert = await Alert.findByIdAndUpdate(req.params.id, req.body, {
+    const Alert = await Alerts.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
     if (!Alert) {
       return res.status(404).send();
     }
-    res.send(Alert);
+    res.status(201).send(Alert);
   } catch (err) {
     res.status(500).send(err);
   }
 };
 const deleteAlert = async (req, res) => {
   try {
-    const Alert = await Alert.findByIdAndDelete(req.params.id);
+    const Alert = await Alerts.findByIdAndDelete(req.params.id);
     if (!Alert) {
       return res.status(404).send();
     }
@@ -91,7 +100,7 @@ const deleteAlert = async (req, res) => {
 };
 
 exports.CreateAlert = CreateAlert;
-exports.getStudennts = getStudennts;
+exports.getAlerts = getAlerts;
 exports.getAlert = getAlert;
 exports.updateAlert = updateAlert;
 exports.deleteAlert = deleteAlert;
