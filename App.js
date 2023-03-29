@@ -9,7 +9,7 @@ const otpRouter = require('./routes/otpRoute')
 const Studentrouter = require('./routes/studentRoute')
 
 app.use(express.json())
-// app.use('',router)
+app.use('',router)
 app.use('',otpRouter)
 app.use('',emailRouter)
 app.use('',passRouter)

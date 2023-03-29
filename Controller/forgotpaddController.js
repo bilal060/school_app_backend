@@ -112,7 +112,7 @@ const resetPass = async (req,res)=>{
         }
         if(newPass.length<8){
             throw Error('Pass to short ')
-        }
+        } 
         const hashnewPass = await hashData(newPass)
        const updateUser = await User.updateOne({email},{password:hashnewPass})
         await deleteOTP({email})
