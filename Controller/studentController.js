@@ -13,12 +13,6 @@ const CreateStudent = async (req, res) => {
   contactNo = contactNo.trim();
   emergencyContactNo = emergencyContactNo.trim();
   address = address.trim();
-  // const phoneRegex = /^\d{10}$/;
-  // if(contactNo.match(phoneRegex)){
-  //   return res.status(500).json({
-  //     message: "Invalid phone Number",
-  //   });
-  //    }
   if (!(fullName||grade || contactNo || emergencyContactNo || address)) {
     return res.status(500).json({
       message: "Internal server Error",
@@ -26,7 +20,7 @@ const CreateStudent = async (req, res) => {
   }
   const Poststudent = await Student.create({
     fullName,
-    studentId : uuidv4(),
+    // studentId,
     grade,
     contactNo,
     emergencyContactNo,
@@ -42,9 +36,9 @@ const CreateStudent = async (req, res) => {
   });
     
   }catch(err){
-   return res.status(400).json({
-      messga:err
-    });
+  
+     throw err
+  
   }
 
 };
