@@ -11,6 +11,7 @@ const userSchema = new Schema({
   email: {
     type: String,
     required: true,
+
   },
   password: {
     type: String,
@@ -23,7 +24,7 @@ const userSchema = new Schema({
   ,
   verified :{
     type:Boolean,
-    default:false
+    default:true
   },
   istrue :{
     type:Boolean,

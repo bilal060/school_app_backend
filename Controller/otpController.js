@@ -67,8 +67,6 @@ const verifyOTP = async (req, res) => {
 };
 
 const deleteOTP = async ({email}) => {
-
-
   try {
     if(!email){
       throw Error('Email not valid Please Check ')

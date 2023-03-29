@@ -9,9 +9,10 @@
     "express": "^4.18.2",
     "force": "^0.0.3",
     "jsonwebtoken": "^9.0.0",
-    "mongoose": "^6.10.0",
+    "mongoose": "^6.10.4",
     "nodemailer": "^6.9.1",
-    "nodemon": "^2.0.20"
+    "nodemon": "^2.0.20",
+    "uuid": "^9.0.0"
   },
   "name": "nodejscrud",
   "version": "1.0.0",
