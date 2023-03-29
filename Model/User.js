@@ -24,7 +24,7 @@ const userSchema = new Schema({
   ,
   verified :{
     type:Boolean,
-    default:true
+    default:false
   },
   istrue :{
     type:Boolean,
