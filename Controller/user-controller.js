@@ -59,7 +59,6 @@ const verifyEmailwithOTP = async ({email}) => {
   }
 };
 
-
 const getAllusers = async (req, res, next) => {
   let users;
   try {
@@ -154,9 +153,6 @@ throw error
 
 }
 
-
-
-
 const updateUser = async (req, res, next) => {
    const id = req.params.id;
     const { name, email, password } = req.body ;
@@ -182,14 +178,11 @@ const updateUser = async (req, res, next) => {
      });
    };
 
-
-
-
   const deleteUser = async (req, res, next) => {
     const id = req.params.id;
      let user;
      try {  
-       user = await Users,findByIdAndRemove(id)
+       user = await Users.findByIdAndRemove(id)
        console.log(user)
      } catch (err) {
        next(err);

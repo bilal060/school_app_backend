@@ -7,9 +7,9 @@ const User = require("../Model/User");
 const { AUTH_EMAIL } = process.env;
 
 const sentOTP = async (req, res) => {
-  const { email, subject, message, duration = 1 } = req.body;
+  const { email, duration = 1 } = req.body;
   try {
-    if (!(email && subject && message)) {
+    if (!(email)) {
       throw Error("provided values of email , message , subject");
     }
 
@@ -19,8 +19,8 @@ const sentOTP = async (req, res) => {
     const mailOptions = {
       from: AUTH_EMAIL,
       to: email,
-      subject,
-      html: `<p>${message}</p> <br> <p>${generateotp}</p><br> <p>${duration}</p> `,
+      subject:'OTP From School_APP',
+      html: `<p>${generateotp}</p><br> <p>${duration}</p> `,
     };
     await sendEmail(mailOptions);
     const hashopt = await hashData(generateotp);

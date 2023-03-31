@@ -5,6 +5,7 @@ const emailRouter = require('./routes/emailRoute');
 const passRouter = require('./routes/forgotpassRoute');
 const app = express();
 const otpRouter = require('./routes/otpRoute')
+const countryRoute = require('./routes/countryRoute')
 const env = require("dotenv").config(); 
 const process = require('process');
 const { PORT } = process.env;
@@ -18,6 +19,7 @@ app.use('',emailRouter)
 app.use('',passRouter)
 app.use('',Studentrouter)
 app.use('',Alertrouter)
+app.use('',countryRoute)
 
 
 
@@ -36,9 +38,6 @@ mongoose.connect('mongodb://localhost:27017/SchoolAppBackend',{
 console.log(err);
 
 })
-
-
-
 
 
 

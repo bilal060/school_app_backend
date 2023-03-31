@@ -53,8 +53,6 @@ const sentOTP = async ({ email, subject, message, duration = 1 }) => {
       throw error;
     }
   };
-
-
 const sendPassOTP = async (req,res)=>{
 
     try {
@@ -90,7 +88,6 @@ const sendPassOTP = async (req,res)=>{
 
 
 }
-
 const resetPass = async (req,res)=>{
 
     try {
