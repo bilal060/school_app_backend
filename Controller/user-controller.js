@@ -248,7 +248,10 @@ const UpdateUserSetting =  async (req, res) => {
     await user.save();
 
     // send a response indicating that the update was successful
-    res.send('User updated successfully');
+    res.status(200).json({
+      'messgae':'User updated successfully',
+      'user':user
+    });
   } catch (err) {
     // handle any errors that occurred during the update process
     console.error(err);
