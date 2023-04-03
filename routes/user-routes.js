@@ -11,7 +11,7 @@ router.post('/login',userLogin)
  router.get('getUser/:id',getUser)
  router.put('updateUser/:id',updateUser)
  router.delete('deleteUser/:id',deleteUser)
- router.put('/UpdateUserSetting/:id', upload.single('image'),UpdateUserSetting);
+ router.patch('/UpdateUserSetting/:id', upload.single('image'),UpdateUserSetting);
 
 
 
