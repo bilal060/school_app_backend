@@ -223,23 +223,21 @@ const UpdateUserSetting =  async (req, res) => {
   const userId = req.params.id;
 
   try {
-    // find the user in the database by ID
     const user = await Users.findById(userId);
 
     if (!user) {
-      // if the user doesn't exist, return a 404 error
       return res.status(404).send('User not found');
     }
 
-    // update the user's name and/or password if provided in the request body
     if (req.body.name) {
       user.name = req.body.name;
+   
     }
     if (req.body.password) {
-      user.password = req.body.password;
+     newpass = req.body.password;
+       const hashdata = await hashData(newpass)
+       user.password = hashdata
     }
-
-    // update the user's image file if provided in the request
     if (req.file) {
       user.image = req.file.filename;
     }

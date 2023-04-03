@@ -103,10 +103,6 @@ const resetPass = async (req,res)=>{
         if(!existingData.verified){
             throw Error('User not verified ')
         }
-        // const validOTP = verifyOTP({email,otp})
-        // if(!validOTP){
-        //     throw Error('otp not valid ')
-        // }
         if(newPass.length<8){
             throw Error('Pass to short ')
         } 
