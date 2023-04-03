@@ -29,7 +29,14 @@ const userSchema = new Schema({
   istrue :{
     type:Boolean,
   },
+    image: {
+    type: String,
+    default: "https://cdn-icons-png.flaticon.com/512/1077/1077114.png"
+  }
   
 });
 const User = mongoose.model('User',userSchema); 
 module.exports = User;
+
+
+

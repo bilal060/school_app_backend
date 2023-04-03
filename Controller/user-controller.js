@@ -218,7 +218,43 @@ const updateUser = async (req, res, next) => {
    const authUser = (req,res)=>{
     res.status(200).send(`you are in the private route  ${req.currentUser.email}`)
    }
+const UpdateUserSetting =  async (req, res) => {
+  // get the user ID from the request params
+  const userId = req.params.id;
 
+  try {
+    // find the user in the database by ID
+    const user = await Users.findById(userId);
+
+    if (!user) {
+      // if the user doesn't exist, return a 404 error
+      return res.status(404).send('User not found');
+    }
+
+    // update the user's name and/or password if provided in the request body
+    if (req.body.name) {
+      user.name = req.body.name;
+    }
+    if (req.body.password) {
+      user.password = req.body.password;
+    }
+
+    // update the user's image file if provided in the request
+    if (req.file) {
+      user.image = req.file.filename;
+    }
+
+    // save the updated user to the database
+    await user.save();
+
+    // send a response indicating that the update was successful
+    res.send('User updated successfully');
+  } catch (err) {
+    // handle any errors that occurred during the update process
+    console.error(err);
+    res.status(500).send('An error occurred while updating the user');
+  }
+}
 
 exports.getAllusers = getAllusers;
 exports.userSignUp = userSignUp;
@@ -228,3 +264,5 @@ exports.getUser = getUser;
 exports.currentUser = currentUser;
 exports.userLogin = userLogin
 exports.authUser = authUser
+exports.UpdateUserSetting = UpdateUserSetting
+
