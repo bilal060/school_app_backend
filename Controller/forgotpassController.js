@@ -91,8 +91,8 @@ const sendPassOTP = async (req,res)=>{
 const resetPass = async (req,res)=>{
 
     try {
-        const {email,otp,newPass} = req.body
-        if(!(email && otp && newPass)){
+        const {newPass,email} = req.body
+        if(!(email && newPass)){
             throw Error('Values are null')
         }
         const existingData = await User.findOne({email})
@@ -103,10 +103,10 @@ const resetPass = async (req,res)=>{
         if(!existingData.verified){
             throw Error('User not verified ')
         }
-        const validOTP = verifyOTP({email,otp})
-        if(!validOTP){
-            throw Error('otp not valid ')
-        }
+        // const validOTP = verifyOTP({email,otp})
+        // if(!validOTP){
+        //     throw Error('otp not valid ')
+        // }
         if(newPass.length<8){
             throw Error('Pass to short ')
         } 
