@@ -4,6 +4,7 @@ const generateOTP = require("../utils/generateOTP");
 const { hashData, verifyHashedData } = require("../Middleware/hashDataHandler");
 const sendEmail = require("../utils/sendEmail");
 const User = require("../Model/User");
+const Student_user = require("../Model/Student_user");
 const { AUTH_EMAIL } = process.env;
 const { deleteOTP } = require("../Controller/otpController");
 
@@ -101,5 +102,29 @@ const verifyEmailUser = async (req, res) => {
     throw error
   }
 };
+const verifyEmailStudetUser = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+    if (!(email, otp)) {
+      throw Error("Values required ");
+    }
+    const validOTP = await verifyOTP({ email, otp });
+    if (!validOTP) {
+      throw Error("Your OTP expire ");
+    }
 
-module.exports = { verifyEmailwithOTP ,verifyEmailUser};
+    //update user verified
+    await Student_user.updateOne({email},{verified:true})
+    await deleteOTP({email});
+    res.status(200).json({
+      email,
+      verified:true
+    })
+  } catch (error) 
+  {
+    throw error
+  }
+};
+
+
+module.exports = { verifyEmailwithOTP ,verifyEmailUser ,verifyEmailStudetUser};

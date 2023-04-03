@@ -72,7 +72,7 @@ const getAllStudent_user = async (req, res, next) => {
     });
   }
   return res.status(200).json({
-    Student_user: Student_user,
+    Student_user: getStudent_users,
   });
 };
 const studentSignUp = async (req, res, next) => {

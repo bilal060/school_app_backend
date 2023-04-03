@@ -4,6 +4,7 @@ const Userrouter = require('./routes/user-routes');
 const emailRouter = require('./routes/emailRoute');
 const passRouter = require('./routes/forgotpassRoute');
 const app = express();
+const cors = require("cors")
 const otpRouter = require('./routes/otpRoute')
 const countryRoute = require('./routes/countryRoute')
 const env = require("dotenv").config(); 
@@ -12,6 +13,18 @@ const { PORT } = process.env;
 const Studentrouter = require('./routes/studentRoute')
 const Student_user_routes = require('./routes/Student_user-routes')
 const Alertrouter = require('./routes/AlertRoute')
+const whitelist = ["http://localhost:port"]
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (!origin || whitelist.indexOf(origin) !== -1) {
+            callback(null, true)
+        } else {
+            callback(new Error("Not allowed by CORS"))
+        }
+    },
+    credentials: true,
+}
+app.use(cors(corsOptions))
 
 app.use(express.json())
 app.use('',Userrouter)
