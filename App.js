@@ -10,6 +10,7 @@ const env = require("dotenv").config();
 const process = require('process');
 const { PORT } = process.env;
 const Studentrouter = require('./routes/studentRoute')
+const Student_user_routes = require('./routes/Student_user-routes')
 const Alertrouter = require('./routes/AlertRoute')
 
 app.use(express.json())
@@ -20,6 +21,7 @@ app.use('',passRouter)
 app.use('',Studentrouter)
 app.use('',Alertrouter)
 app.use('',countryRoute)
+app.use('',Student_user_routes)
 
 
 
