@@ -13,6 +13,7 @@ const { PORT } = process.env;
 const Studentrouter = require('./routes/studentRoute')
 const Student_user_routes = require('./routes/Student_user-routes')
 const Alertrouter = require('./routes/AlertRoute')
+const eventRouter = require('./routes/eventsRoutes')
 const whitelist = ["http://localhost:port"]
 const corsOptions = {
     origin: function (origin, callback) {
@@ -27,6 +28,7 @@ const corsOptions = {
 app.use(cors(corsOptions))
 
 app.use(express.json())
+//Routes
 app.use('',Userrouter)
 app.use('',otpRouter)
 app.use('',emailRouter)
@@ -35,6 +37,7 @@ app.use('',Studentrouter)
 app.use('',Alertrouter)
 app.use('',countryRoute)
 app.use('',Student_user_routes)
+app.use('',eventRouter)
 
 
 
