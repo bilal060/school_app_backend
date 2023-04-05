@@ -41,7 +41,7 @@ const Student_userSchema = new Schema({
     type: String,
     required: true,
     minLenght: 7,
-    default:'12345678'
+    default:'11223344'
   },
   token :{
     type:String

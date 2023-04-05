@@ -28,10 +28,10 @@ const getAllStudent_user = async (req, res, next) => {
   });
 };
 const studentSignUp = async (req, res, next) => {
-  let { name, email, password, phone1, phone2, state, city, dob } = req.body;
+  let { name, email,password='1234567', phone1, phone2, state, city, dob } = req.body;
   name = name.trim();
   email = email.trim();
-  password = password.trim();
+   password = password.trim();
   phone1 = phone1.trim();
   phone2 = phone2.trim();
   state = state.trim();
@@ -42,7 +42,7 @@ const studentSignUp = async (req, res, next) => {
     throw Error("invalid email");
   }
   if (
-    !(name || email || password || phone1 || phone2 || state || city || dob)
+    !(name || email||password  || phone1 || phone2 || state || city || dob)
   ) {
     return res.status(500).json({
       message: "Internal server Error",
@@ -95,7 +95,6 @@ const Student_userLogin = async (req, res, err) => {
         messga: "Email not Verified",
       });
     }
-    //create Token
     const tokeData = { userId: userFetch._id, email };
     const token = await createToken(tokeData);
     userFetch.token = token;
@@ -103,7 +102,6 @@ const Student_userLogin = async (req, res, err) => {
     res.status(200).json({
       userFetch,
     });
-    // return userFetch
   } catch (error) {
     throw error;
   }

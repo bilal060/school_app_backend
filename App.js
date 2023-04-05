@@ -14,6 +14,8 @@ const Studentrouter = require('./routes/studentRoute')
 const Student_user_routes = require('./routes/Student_user-routes')
 const Alertrouter = require('./routes/AlertRoute')
 const eventRouter = require('./routes/eventsRoutes')
+const faqrouter = require('./routes/faqRoute');
+const FAQ = require('./Model/faq');
 const whitelist = ["http://localhost:port"]
 const corsOptions = {
     origin: function (origin, callback) {
@@ -38,6 +40,7 @@ app.use('',Alertrouter)
 app.use('',countryRoute)
 app.use('',Student_user_routes)
 app.use('',eventRouter)
+app.use('',faqrouter)
 
 
 
@@ -58,4 +61,55 @@ console.log(err);
 })
 
 
+// const faq = [
+//     {
+//         "question": "What is Node.js?",
+//         "answer": "Node.js is a runtime environment for executing JavaScript code outside of a web browser."
+//     },
+//     {
+//         "question": "What is Node.js?",
+//         "answer": "Node.js is a runtime environment for executing JavaScript code outside of a web browser."
+//     },
+//     {
+//         "question": "What is Node.js?",
+//         "answer": "Node.js is a runtime environment for executing JavaScript code outside of a web browser."
+//     },
+//     {
+//         "question": "What is Node.js?",
+//         "answer": "Node.js is a runtime environment for executing JavaScript code outside of a web browser."
+//     },
+//     {
+//         "question": "What is Node.js?",
+//         "answer": "Node.js is a runtime environment for executing JavaScript code outside of a web browser."
+//     },
+//     {
+//         "question": "What is Node.js?",
+//         "answer": "Node.js is a runtime environment for executing JavaScript code outside of a web browser."
+//     },
+//     {
+//         "question": "What is Node.js?",
+//         "answer": "Node.js is a runtime environment for executing JavaScript code outside of a web browser."
+//     },
+//     {
+//         "question": "What is Node.js?",
+//         "answer": "Node.js is a runtime environment for executing JavaScript code outside of a web browser."
+//     },
+//     {
+//         "question": "What is Node.js?",
+//         "answer": "Node.js is a runtime environment for executing JavaScript code outside of a web browser."
+//     }
+    
+//     ]
+    
+
+// const importData = async () => {
+//     try {
+//       await FAQ.create(faq);
+//       console.log('Data successfully loaded!');
+//     } catch (err) {
+//       console.log(err);
+//     }
+//     process.exit();
+//   };
+// importData();
 
