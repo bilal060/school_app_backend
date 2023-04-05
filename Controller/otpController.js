@@ -6,25 +6,19 @@ const sendEmail = require("../utils/sendEmail");
 const User = require("../Model/User");
 const { AUTH_EMAIL } = process.env;
 
-const sentOTP = async (req, res) => {
-  const { email, duration = 1 } = req.body;
-  try {
-    if (!(email)) {
-      throw Error("provided values of email , message , subject");
-    }
 
-    //clear old record
+const sentOTP = async ({ email, subject, message, duration = 1 }) => {
+  try { 
     await OTP.deleteOne({ email });
     const generateotp = await generateOTP();
     const mailOptions = {
       from: AUTH_EMAIL,
       to: email,
-      subject:'OTP From School_APP',
-      html: `<p>${generateotp}</p><br> <p>${duration}</p> `,
+      subject,
+      html: `<p>${message}</p> <br> <p>${generateotp}</p><br> <p>${duration}</p> `,
     };
     await sendEmail(mailOptions);
     const hashopt = await hashData(generateotp);
-
     const newOTP = new OTP({
       email,
       otp: hashopt,
@@ -32,19 +26,16 @@ const sentOTP = async (req, res) => {
       expireAT: Date.now() + 360000 * duration,
     });
     const createOTP = await newOTP.save();
-    console.log(createOTP);
-    res.status(200).json(createOTP);
+    console.log(createOTP)
+    return createOTP;
   } catch (error) {
     throw error;
   }
 };
 
-const verifyOTP = async (req, res) => {
+
+const verifyOTP = async ({email ,otp}) => {
   try { 
-    let { email, otp } = req.body;
-    if (!(email, otp)) {
-      throw Error("Your Email and otp values required");
-    }
     const otpMatched = await OTP.findOne({ email });
     if (!otpMatched) {
       throw Error("No OTP");
@@ -53,14 +44,12 @@ const verifyOTP = async (req, res) => {
     const { expireAT } = otpMatched;
     if (expireAT < Date.now()) {
       await OTP.deleteOne({ email });
-      throw Error("Your OTP Expired");
+      return  Error("Your OTP Expired");
     }
 
     const hashotp = otpMatched.otp;
     const validotp = await verifyHashedData(otp, hashotp);
-    res.status(200).json({
-      validotp,
-    });
+    return validotp
   } catch (error) {
     throw error;
   }

@@ -8,56 +8,9 @@ const OTP = require('../Model/otp')
 const jwt = require('jsonwebtoken')
 const {hashData,verifyHashedData} = require('../Middleware/hashDataHandler')
 const createToken = require('../Middleware/createToken')
+const { verifyEmailwithOTP} = require("../Controller/verifyemailController")
 
-const sentOTP = async ({ email, subject, message, duration = 1 }) => {
-  try { 
-    //clear old record
-    await OTP.deleteOne({ email });
-    const generateotp = await generateOTP();
-    const mailOptions = {
-      from: AUTH_EMAIL,
-      to: email,
-      subject,
-      html: `<p>${message}</p> <br> <p>${generateotp}</p><br> <p>${duration}</p> `,
-    };
-    await sendEmail(mailOptions);
-    const hashopt = await hashData(generateotp);
-    const newOTP = new OTP({
-      email,
-      otp: hashopt,
-      createdAT: Date.now(),
-      expireAT: Date.now() + 360000 * duration,
-    });
-    const createOTP = await newOTP.save();
-    console.log(createOTP)
-    return createOTP;
-  } catch (error) {
-    throw error;
-  }
-};
 
-const verifyEmailwithOTP = async ({email}) => {
-  try {
-    if (!email) {
-      throw Error("Email Value required");
-    }
-    const existingData = await Users.findOne({ email });
-
-    if (!existingData) {
-      throw Error("email not found");
-    }
-    const otpDetails = {
-      email,
-      subject: "Email Verification",
-      message: "Verify your email with bellow code..!",
-      duration: 1,
-    };
-    const createdOTP = await sentOTP(otpDetails);
-   return createdOTP
-  } catch (error) {
-    throw error;
-  }
-};
 
 const getAllusers = async (req, res, next) => {
   let users;
@@ -75,7 +28,7 @@ const getAllusers = async (req, res, next) => {
     users: users,
   });
 };
-const userSignUp = async (req, res, next) => {
+const userSignUp = async (req, res,) => {
   let { name, email, password , } = req.body ;
   name = name.trim()
   email = email.trim()
@@ -219,33 +172,29 @@ const updateUser = async (req, res, next) => {
     res.status(200).send(`you are in the private route  ${req.currentUser.email}`)
    }
 const UpdateUserSetting =  async (req, res) => {
-  // get the user ID from the request params
-  const userId = req.params.id;
-
   try {
+    const userId = req.params.id;
+    let  {name , password} = req.body
+    name = name.trim()
+    password = password.trim()
     const user = await Users.findById(userId);
 
     if (!user) {
       return res.status(404).send('User not found');
     }
-
-    if (req.body.name) {
-      user.name = req.body.name;
+    if (name) {
+      user.name =name;
    
     }
-    if (req.body.password) {
-     newpass = req.body.password;
-       const hashdata = await hashData(newpass)
-       user.password = hashdata
+    if (password) {
+       newpass = password
+      const hashdata = await hashData(newpass)
+      user.password = hashdata
     }
     if (req.file) {
       user.image = req.file.filename;
     }
-
-    // save the updated user to the database
     await user.save();
-
-    // send a response indicating that the update was successful
     res.status(200).json({
       'messgae':'User updated successfully',
       'user':user

@@ -4,8 +4,9 @@ const generateOTP = require("../utils/generateOTP");
 const { hashData, verifyHashedData } = require("../Middleware/hashDataHandler");
 const sendEmail = require("../utils/sendEmail");
 const User = require("../Model/User");
+const Student_user = require("../Model/Student_user");
 const { create } = require("../Model/otp");
-const { deleteOTP } = require("./otpController");
+const { deleteOTP,sentOTP } = require("./otpController");
 const { AUTH_EMAIL } = process.env;
 
 const verifyOTP = async ({ email, otp }) => {
@@ -27,32 +28,7 @@ const verifyOTP = async ({ email, otp }) => {
       throw error;
     }
   };
-const sentOTP = async ({ email, subject, message, duration = 1 }) => {
-    try {
-      //clear old record
-      await OTP.deleteOne({ email });
-      const generateotp = await generateOTP();
-      const mailOptions = {
-        from: AUTH_EMAIL,
-        to: email,
-        subject,
-        html: `<p>${message}</p> <br> <p>${generateotp}</p><br> <p>${duration}</p> `,
-      };
-      await sendEmail(mailOptions);
-      const hashopt = await hashData(generateotp);
-  
-      const newOTP = new OTP({
-        email,
-        otp: hashopt,
-        createdAT: Date.now(),
-        expireAT: Date.now() + 360000 * duration,
-      });
-      const createOTP = await newOTP.save();
-      return createOTP;
-    } catch (error) {
-      throw error;
-    }
-  };
+
 const sendPassOTP = async (req,res)=>{
 
     try {
@@ -78,7 +54,9 @@ const sendPassOTP = async (req,res)=>{
           };
           const createOtp =  sentOTP(otpDetails)
           res.status(200).json({
-            message:"Reset Password OTP send on your mail box"
+            message:"Reset Password OTP send on your mail box",
+            createOtp
+
           })
 
     } catch (error) {
@@ -122,4 +100,39 @@ const resetPass = async (req,res)=>{
 
 
 
-module.exports = {sendPassOTP,resetPass };
+const resetStudentPass = async (req,res)=>{
+
+    try {
+        const {newPass,email} = req.body
+        if(!(email && newPass)){
+            throw Error('Values are null')
+        }
+        const existingData = await Student_user.findOne({email})
+        if(!existingData){
+            throw Error('User not exist ')
+        }
+
+        if(!existingData.verified){
+            throw Error('User not verified ')
+        }
+        if(newPass.length<8){
+            throw Error('Pass to short ')
+        } 
+        const hashnewPass = await hashData(newPass)
+       const updateUser = await Student_user.updateOne({email},{password:hashnewPass})
+        await deleteOTP({email})
+        res.status(200).json({
+            message:"Your Password Reset Done",
+            updateUser
+        })
+    } catch (error) {
+         
+        throw error
+    }
+
+
+}
+
+
+
+module.exports = {sendPassOTP,resetPass,resetStudentPass };
