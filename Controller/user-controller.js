@@ -77,24 +77,17 @@ try {
   }
   const hashedpass = userFetch.password
   const passwordMatch = await verifyHashedData(password , hashedpass)   
-  if(!passwordMatch){
-    res.status(500).json({message:'Inavlid user Password'})
-  }
-  if(!userFetch.verified){
-    res.status(500).json({
-      messga:'Email not Verified'
+  if (!passwordMatch || !userFetch.verified) {
+    res.status(401).json({ message: "Invalid credentials" });
+  }else{
+    const tokeData = {userId: userFetch._id , email}
+    const token = await createToken(tokeData)
+    userFetch.token = token
+    console.log( userFetch)
+    res.status(200).json({
+      userFetch 
     })
   }
-  //create Token
-  const tokeData = {userId: userFetch._id , email}
-  const token = await createToken(tokeData)
-  userFetch.token = token
-  console.log( userFetch)
-  res.status(200).json({
-    userFetch 
-  })
-  // return userFetch
- 
 } catch (error) {
 
 throw error
