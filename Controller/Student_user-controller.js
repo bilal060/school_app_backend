@@ -8,7 +8,7 @@ const OTP = require("../Model/otp");
 const jwt = require("jsonwebtoken");
 const { hashData, verifyHashedData } = require("../Middleware/hashDataHandler");
 const createToken = require("../Middleware/createToken");
-const { verifyEmailwithOTP} = require("../Controller/verifyemailController")
+const { verifyStudentEmailwithOTP} = require("../Controller/verifyemailController")
 
 
 const getAllStudent_user = async (req, res, next) => {
@@ -70,7 +70,7 @@ const studentSignUp = async (req, res, next) => {
       message: "user Error",
     });
   }
-  await verifyEmailwithOTP({ email });
+  await verifyStudentEmailwithOTP({ email });
 
   return res.status(201).json({
     Student_user: user,

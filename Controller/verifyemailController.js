@@ -13,7 +13,24 @@ const { deleteOTP,sentOTP ,verifyOTP } = require("../Controller/otpController");
 const verifyEmailwithOTP = async ({email}) => {
   try {
     const existingData = await User.findOne({ email });
-
+    if (!existingData) {
+      throw Error("email not found");
+    }
+    const otpDetails = {
+      email,
+      subject: "Email Verification",
+      message: "Verify your email with bellow code..!",
+      duration: 1,
+    };
+    const createdOTP = await sentOTP(otpDetails);
+    return createdOTP;
+  } catch (error) {
+    throw error;
+  }
+};
+const verifyStudentEmailwithOTP = async ({email}) => {
+  try {
+    const existingData = await Student_user.findOne({ email });
     if (!existingData) {
       throw Error("email not found");
     }
@@ -72,4 +89,4 @@ const verifyEmailStudetUser = async (req, res) => {
 };
 
 
-module.exports = { verifyEmailwithOTP ,verifyEmailUser ,verifyEmailStudetUser};
+module.exports = { verifyEmailwithOTP ,verifyEmailUser ,verifyEmailStudetUser,verifyStudentEmailwithOTP};
