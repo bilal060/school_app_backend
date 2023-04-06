@@ -51,6 +51,10 @@ const Student_userSchema = new Schema({
     type:Boolean,
     default:false
   },
+  // image: {
+  //   type: String,
+ 
+  // }
   
 });
 const Student_user = mongoose.model('Student_user',Student_userSchema); 

@@ -171,13 +171,11 @@ const UpdateUserSetting =  async (req, res) => {
     name = name.trim()
     password = password.trim()
     const user = await Users.findById(userId);
-
     if (!user) {
       return res.status(404).send('User not found');
     }
     if (name) {
       user.name =name;
-   
     }
     if (password) {
        newpass = password

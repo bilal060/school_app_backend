@@ -1,8 +1,10 @@
 const { findByIdAndRemove, findById, findOne } = require("../Model/User");
 const Student_user = require("../Model/Student_user");
+const Image =require('../Model/UserImage')
 const sendEmail = require("../utils/sendEmail");
 const env = require("dotenv").config();
 const { AUTH_EMAIL } = process.env;
+const StudentUserImg =require('../Model/UserImage')
 const generateOTP = require("../utils/generateOTP");
 const OTP = require("../Model/otp");
 const jwt = require("jsonwebtoken");
@@ -91,12 +93,14 @@ const Student_userLogin = async (req, res, err) => {
     res.status(401).json({ message: "Invalid credentials" });
   }
   else{
+    const image = await Image.findOne({ user: userFetch._id });
     const tokeData = { userId: userFetch._id, email };
     const token = await createToken(tokeData);
     userFetch.token = token;
     console.log(userFetch);
       res.status(200).json({
         userFetch,
+        image
       })
   }
    
@@ -173,6 +177,33 @@ const authUser = (req, res) => {
     .send(`you are in the private route  ${req.currentUser.email}`);
 };
 
+
+
+const uploadImg = async (req, res) => {
+  try {
+    const studentUser = await Student_user.findById(req.params.id);
+    const oldImage = await StudentUserImg.findOne({ user: studentUser._id });
+    if (oldImage) {
+      await StudentUserImg.deleteOne({ _id: oldImage._id });
+    }
+    const newImage = new StudentUserImg({
+      user: studentUser._id,
+      filename: req.file.filename,
+      filepath: req.file.path
+    });
+    await newImage.save();
+    res.status(200).json({
+      message:'File uploaded successfully.',
+      studentUser
+  });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('An error occurred while uploading the file.');
+  }
+}
+
+
+
 exports.getAllStudent_user = getAllStudent_user;
 exports.studentSignUp = studentSignUp;
 exports.updateStudent_user = updateStudent_user;
@@ -181,3 +212,4 @@ exports.getStudet_user = getStudet_user;
 exports.currentUser = currentUser;
 exports.Student_userLogin = Student_userLogin;
 exports.authUser = authUser;
+exports.uploadImg = uploadImg;

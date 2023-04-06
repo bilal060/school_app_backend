@@ -16,6 +16,7 @@ const Alertrouter = require('./routes/AlertRoute')
 const eventRouter = require('./routes/eventsRoutes')
 const faqrouter = require('./routes/faqRoute');
 const FAQ = require('./Model/faq');
+const Student_user = require('./Model/Student_user');
 const whitelist = ["http://localhost:port"]
 const corsOptions = {
     origin: function (origin, callback) {
@@ -113,3 +114,7 @@ console.log(err);
 //   };
 // importData();
 
+
+
+
+  

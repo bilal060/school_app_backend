@@ -1,17 +1,23 @@
-const mongoose = require('mongoose');
 
-const UserImageSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
+
+const ImgSchema = new mongoose.Schema({
+  user: {
+    type: Schema.Types.ObjectId,
     ref: 'Student_user',
     required: true
   },
-  image: {
-    type: Buffer,
-    contentType: String
+  filename: {
+    type: String,
+    required: true
+  },
+  filepath: {
+    type: String,
+    required: true
   }
 });
 
-const UserImage = mongoose.model('UserImage', UserImageSchema);
+const StudentUserImg = mongoose.model('StudentUserImg', ImgSchema);
 
-module.exports = UserImage;
+module.exports = StudentUserImg;

@@ -79,6 +79,7 @@ const verifyEmailStudetUser = async (req, res) => {
     await Student_user.updateOne({email},{verified:true})
     await deleteOTP({email});
     res.status(200).json({
+      _id: updatedUser._id,
       email,
       verified:true
     })
