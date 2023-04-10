@@ -15,6 +15,7 @@ const Student_user_routes = express.Router();
 Student_user_routes.post("/studentSignUp", studentSignUp);
 Student_user_routes.post("/studentLogin", Student_userLogin);
 Student_user_routes.get("/getAllLoginStudent", getAllStudent_user);
+Student_user_routes.patch("/UpdateStudentUser/:id", updateStudent_user);
 
 Student_user_routes.post(
     "/students/:id/image",
