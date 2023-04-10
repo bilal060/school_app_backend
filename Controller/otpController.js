@@ -38,7 +38,7 @@ const verifyOTP = async ({email ,otp}) => {
   try { 
     const otpMatched = await OTP.findOne({ email });
     if (!otpMatched) {
-      throw Error("No OTP");
+      throw Error("No OTP Matched By this email");
     }
 
     const { expireAT } = otpMatched;

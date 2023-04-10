@@ -37,6 +37,21 @@ emailRouter.post('/verifyUser',async (req, res) => {
          });
          console.log(err)
       }})
-emailRouter.post('/verifyStudetUser',verifyEmailStudetUser)
+emailRouter.post('/verifyStudetUser' , async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+    if (!(email, otp)) {
+      throw Error("Values required ");
+    }
+    const ValidUser = await  verifyEmailStudetUser({email,otp})
+      res.status(200).json({ 
+        ValidUser
+     });
+    }catch(err){
+      res.status(500).json({ 
+          message:"internal Server Error"
+       });
+       console.log(err)
+    }})
 
 module.exports = emailRouter;

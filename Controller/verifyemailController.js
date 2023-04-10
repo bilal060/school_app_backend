@@ -64,9 +64,11 @@ const verifyEmailUser = async ({email,otp}) => {
     throw error
   }
 };
-const verifyEmailStudetUser = async (req, res) => {
+
+
+
+const verifyEmailStudetUser = async ({email,otp})  => {
   try {
-    const { email, otp } = req.body;
     if (!(email, otp)) {
       throw Error("Values required ");
     }
@@ -74,15 +76,10 @@ const verifyEmailStudetUser = async (req, res) => {
     if (!validOTP) {
       throw Error("Your OTP expire ");
     }
-
     //update user verified
     await Student_user.updateOne({email},{verified:true})
     await deleteOTP({email});
-    res.status(200).json({
-      _id: updatedUser._id,
-      email,
-      verified:true
-    })
+    return {email ,verified:true}
   } catch (error) 
   {
     throw error

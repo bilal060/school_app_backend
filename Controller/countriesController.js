@@ -6,6 +6,7 @@ const getAllContries = async (req,res)=>{
     const { country, state , q } = req.query;
      const countriesList = worldMapData.getAllCountries();
     if(req.query.country){
+        //get All states
         const statesList = worldMapData.getAllStatesFromCountry(country);
         res.status(200).json({
             statesList
@@ -17,7 +18,7 @@ const getAllContries = async (req,res)=>{
             citiesList
         }) 
     }
-      else if(req.query.city){
+    else if(req.query.city){
         const citiesList = worldMapData.getAllCitiesFromState(city);
         res.status(200).json({
             citiesList
