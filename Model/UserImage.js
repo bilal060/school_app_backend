@@ -8,13 +8,8 @@ const ImgSchema = new mongoose.Schema({
     ref: 'Student_user',
     required: true
   },
-  filename: {
-    type: String,
-    required: true
-  },
-  filepath: {
-    type: String,
-    required: true
+  base64Image:{
+    type:String
   }
 });
 

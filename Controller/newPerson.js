@@ -1,16 +1,13 @@
 const { findByIdAndRemove, findById, findOne } = require("../Model/User");
-const Student_user = require("../Model/Student_user");
-const Image =require('../Model/UserImage')
-const sendEmail = require("../utils/sendEmail");
+const Person = require("../Model/newPerson");
 const env = require("dotenv").config();
 const { AUTH_EMAIL } = process.env;
-const StudentUserImg =require('../Model/UserImage')
 const generateOTP = require("../utils/generateOTP");
 const OTP = require("../Model/otp");
 const jwt = require("jsonwebtoken");
 const { hashData, verifyHashedData } = require("../Middleware/hashDataHandler");
 const createToken = require("../Middleware/createToken");
-const { verifyStudentEmailwithOTP} = require("../Controller/verifyemailController")
+const { verifyStudentEmailwithOTP} = require("./verifyemailController")
 
 
 const getAllStudent_user = async (req, res, next) => {
@@ -29,53 +26,45 @@ const getAllStudent_user = async (req, res, next) => {
     Student_user: getStudent_users,
   });
 };
-const studentSignUp = async (req, res, next) => {
-  let { name, email,password='1234567', phone1, phone2, state, city, dob } = req.body;
+const createPerson = async (req, res, next) => {
+  let { name, phone1, state, city, relation ,social_security_no,description} = req.body;
   name = name.trim();
-  email = email.trim();
-   password = password.trim();
   phone1 = phone1.trim();
-  phone2 = phone2.trim();
+  relation = relation.trim();
   state = state.trim();
   city = city.trim();
-  dob = dob.trim();
-  var emailFormat = /^[A-Z0-9+_.-]+@[A-Z0-9.-]+$/;
-  if (email.match(emailFormat)) {
-    throw Error("invalid email");
-  }
+  social_security_no = social_security_no.trim();
+  description = description.trim();
+
   if (
-    !(name || email||password  || phone1 || phone2 || state || city || dob)
+    !(name || phone1 || state || city || relation|| social_security_no|| description)
   ) {
     return res.status(500).json({
       message: "Internal server Error",
     });
   }
-  const userAvailable = await Student_user.findOne({ email });
-  if (userAvailable) {
-    return res.status(409).json({
-      message: "email already Exist",
-    });
-  }
-  const hashPassword = await hashData(password);
-  const user = await Student_user.create({
+  // const userAvailable = await Person.findOne({ email });
+  // if (userAvailable) {
+  //   return res.status(409).json({
+  //     message: "email already Exist",
+  //   });
+  // }
+  const user = await Person.create({
     name,
-    email,
-    password: hashPassword,
     phone1,
-    phone2,
     state,
     city,
-    dob,
+    relation,
+    social_security_no,
+    description
   });
   if (!user) {
     return res.status(500).json({
       message: "user Error",
     });
   }
-  await verifyStudentEmailwithOTP({ email });
-
   return res.status(201).json({
-    Student_user: user,
+    Person: user,
   });
 };
 
@@ -205,8 +194,6 @@ const authUser = (req, res) => {
 
 const uploadImg = async (req, res) => {
   try {
-    const { base64Image } = req.body;
-    let prefixedImage = "data:image/jpeg;base64," + base64Image;
     const studentUser = await Student_user.findById(req.params.id);
     const oldImage = await StudentUserImg.findOne({ user: studentUser._id });
     if (oldImage) {
@@ -214,13 +201,14 @@ const uploadImg = async (req, res) => {
     }
     const newImage = new StudentUserImg({
       user: studentUser._id,
-      base64Image: prefixedImage,
+      filename: req.file.filename,
+      filepath: req.file.path
     });
     await newImage.save();
     res.status(200).json({
-      message: 'Image added to the database successfully.',
+      message:'File uploaded successfully.',
       studentUser
-    });
+  });
   } catch (err) {
     console.error(err);
     res.status(500).send('An error occurred while uploading the file.');
@@ -230,7 +218,7 @@ const uploadImg = async (req, res) => {
 
 
 exports.getAllStudent_user = getAllStudent_user;
-exports.studentSignUp = studentSignUp;
+exports.createPerson = createPerson;
 exports.updateStudent_user = updateStudent_user;
 exports.deleteStudent_User = deleteStudent_User;
 exports.getStudet_user = getStudet_user;

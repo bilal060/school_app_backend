@@ -50,6 +50,7 @@ const importData = async () => {
     }
     process.exit();
   };
+
   
   exports.importData = importData;
 
@@ -57,18 +58,7 @@ const importData = async () => {
 
 
 
-// // Define a schema for image galleries
-// const gallerySchema = new mongoose.Schema({
-//   imageUrl: String,
-//   title: String,
-//   description: String,
-//   date: Date
-// });
 
-// // Create a model for image galleries
-// const Gallery = mongoose.model('Gallery', gallerySchema);
-
-// // Define a route that retrieves image galleries
 // app.get('/galleries', async (req, res) => {
 //   // Get the start and end dates from the query parameters
 //   const startDate = moment(req.query.start_date);

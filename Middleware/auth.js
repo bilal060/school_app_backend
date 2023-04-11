@@ -8,11 +8,7 @@ const verifyToken =  async(req , res , next )=>{
     if(!token){
         res.status(403).send(' an authentication token is required !')
     }
-
-
     try {
-
-
         const decodeToken = await jwt.verify(token,TOKEN_KEY)
         req.currentUser = decodeToken
         
@@ -20,7 +16,6 @@ const verifyToken =  async(req , res , next )=>{
         
         res.status(401).send('invalid token provider')
     }
-
     return next();
 }
 

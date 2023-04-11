@@ -5,6 +5,9 @@ const Userrouter = require('./routes/user-routes');
 const emailRouter = require('./routes/emailRoute');
 const passRouter = require('./routes/forgotpassRoute');
 const app = express();
+const bodyParser = require('body-parser');
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 const fs = require('fs')
 const path = require('path');
 const uploadPath = path.join(__dirname, 'uploads', 'books');
@@ -22,6 +25,8 @@ const Alertrouter = require('./routes/AlertRoute')
 const eventRouter = require('./routes/eventsRoutes')
 const faqrouter = require('./routes/faqRoute');
 const Booksrouter = require('./routes/bookRoutes');
+const imageGalleryrouter = require('./routes/imageGallery');
+const PersonRoute = require('./routes/personRoute');
 const { Bookupload } = require('./Middleware/uploadImage');
 
 const whitelist = ["http://localhost:port"]
@@ -50,6 +55,8 @@ app.use('',Student_user_routes)
 app.use('',eventRouter)
 app.use('',faqrouter)
 app.use('',Booksrouter)
+app.use('',imageGalleryrouter)
+app.use('',PersonRoute)
 
 
 

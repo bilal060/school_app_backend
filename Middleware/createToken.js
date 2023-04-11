@@ -11,9 +11,6 @@ try {
     
     throw error
 }
-
-
-
 }
 
 module.exports = createToken

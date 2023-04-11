@@ -19,7 +19,6 @@ Student_user_routes.patch("/UpdateStudentUser/:id", updateStudent_user);
 
 Student_user_routes.post(
     "/students/:id/image",
-    upload.single('image'),
     uploadImg
 );
 
@@ -28,7 +27,7 @@ module.exports = Student_user_routes;
 
 
 
-// app.put('/students/:id/image', upload.single('image'), async (req, res) => {
+
 //     try {
 //       // Find the image document for the user
 //       const image = await Image.findOne({ user: req.params.id });
