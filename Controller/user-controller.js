@@ -93,10 +93,6 @@ try {
 throw error
   
 }
-
-
-
-
 }
 
 const updateUser = async (req, res, next) => {

@@ -39,7 +39,7 @@ const corsOptions = {
     credentials: true,
 }
 app.use(cors(corsOptions))
-
+app.use('/uploads', express.static(path.join('uploads', '/')));
 app.use(express.json())
 //Routes
 app.use('',Userrouter)

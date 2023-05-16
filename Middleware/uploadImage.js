@@ -1,5 +1,4 @@
 const multer = require('multer');
-// set up the multer middleware to handle file uploads
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, 'uploads/')
@@ -18,10 +17,6 @@ const storage = multer.diskStorage({
       }
     }
   })
-
-
-
-
   const bookstorage = multer.diskStorage({
     destination: (req, file, cb) => {
       cb(null, 'uploads/books');
@@ -31,9 +26,6 @@ const storage = multer.diskStorage({
     }
   });
   const Bookupload = multer({storage: bookstorage });
-
-
-
 
   exports.upload = upload
   exports.Bookupload = Bookupload
