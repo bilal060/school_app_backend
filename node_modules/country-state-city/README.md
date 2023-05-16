@@ -9,6 +9,14 @@ For any data related issue, you can also raise a Issue [here](https://github.com
 # Install
 `npm i country-state-city`
 
+# Demos - Tree Shaking
+1. Next.js
+	- [Repo Link](https://github.com/harpreetkhalsagtbit/next-js-country-state-city-tree-shake-demo)
+	- [Demo](https://next-js-country-state-city-tree-shake-demo.vercel.app) (production build)
+3. React.js
+	- [Repo Link](https://github.com/harpreetkhalsagtbit/react-js-country-state-city-tree-shake-demo)
+	- [Demo](https://react-js-country-state-city-tree-shake-demo.vercel.app) (production build)
+
 # Release Info & Documentation
 1. [Release v3.1.0](https://github.com/harpreetkhalsagtbit/country-state-city/tree/hotfix/split-csc-data-for-better-debugging-and-fixing-data#release--v310)
     1. [Overview](https://github.com/harpreetkhalsagtbit/country-state-city/tree/hotfix/split-csc-data-for-better-debugging-and-fixing-data#overview)
@@ -42,12 +50,15 @@ For any data related issue, you can also raise a Issue [here](https://github.com
 
 ## How to contribute to Country, State, City Database, request changes and report issue?
 1. **Code change** - make the necessary change, raise the PR.
-2. **Data changes** - Database is in `data` folder in the root.
+2. **Data changes** - Database is in `data` folder in the root. Please follow this [guidelines](/dataUpdateGuide.md).
 3. **Update**: Add the necessary changes in the particular files with proper structure and format and then raise the PR.
 4. **Add New - Country, State, City** - follow the proper folder structure and raise the P.R or simply share the JSONs in an issue with proper and up to date reference.  
 6. **Deleting - Country, State, City** - remove the necessary files/folder - update the necessary files and raise the PR or simply share the updated JSONs in an issue with a proper and up to date reference.
 7. Queries/Issues related to wrong data must be provided with some references.
 8. For any **Geo-Political** related **queries, border conflicts** - things will be updated when multiple proper references has been provided.
+
+## Data updation guide
+Please follow this [guidelines](/dataUpdateGuide.md)
 
 ## How Data will be Released finally?
 1. After the changes gets merged, a script will be run to combine all the data in a separate but single file for each Country, State, City as we have earlier without affecting out library functions and only those three files are passed to the build code and then it gets released.
@@ -97,7 +108,7 @@ For any data related issue, you can also raise a Issue [here](https://github.com
 
 # Docs
 
-City.getCountryByCode(countryCode)
+Country.getCountryByCode(countryCode)
 ---------------
 
 It accepts a valid `CountryCode` eg: `'AS'` and   returns *Country Details*
