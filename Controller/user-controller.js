@@ -183,7 +183,7 @@ const UpdateUserSetting =  async (req, res) => {
       user.password = hashdata
     }
     if (req.file) {
-      user.image = req.file.filename;
+      user.image = req.file.path;
     }
     await user.save();
     res.status(200).json({

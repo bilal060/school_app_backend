@@ -1,4 +1,4 @@
-const { findByIdAndRemove, findById, findOne } = require("../Model/User");
+const { findByIdAndRemove, findById, findOne } = require("../Model/person");
 const Person = require("../Model/newPerson");
 const env = require("dotenv").config();
 const { AUTH_EMAIL } = process.env;
@@ -10,20 +10,20 @@ const createToken = require("../Middleware/createToken");
 const { verifyStudentEmailwithOTP} = require("./verifyemailController")
 
 
-const getAllStudent_user = async (req, res, next) => {
-  let getStudent_users;
+const getAllPerson = async (req, res, next) => {
+  let getPersond;
   try {
-    getStudent_users = await Student_user.find();
+    getPersond = await Person.find();
   } catch (err) {
     next(err);
   }
-  if (!getStudent_users) {
+  if (!getPersond) {
     return res.status(500).json({
       message: "Internal Server Error",
     });
   }
   return res.status(200).json({
-    Student_user: getStudent_users,
+    getPersond: getPersond,
   });
 };
 const createPerson = async (req, res, next) => {
@@ -43,13 +43,7 @@ const createPerson = async (req, res, next) => {
       message: "Internal server Error",
     });
   }
-  // const userAvailable = await Person.findOne({ email });
-  // if (userAvailable) {
-  //   return res.status(409).json({
-  //     message: "email already Exist",
-  //   });
-  // }
-  const user = await Person.create({
+  const person = await Person.create({
     name,
     phone1,
     state,
@@ -58,48 +52,18 @@ const createPerson = async (req, res, next) => {
     social_security_no,
     description
   });
-  if (!user) {
+  if (!person) {
     return res.status(500).json({
-      message: "user Error",
+      message: "person Error",
     });
   }
   return res.status(201).json({
-    Person: user,
+    Person: person,
   });
 };
 
-const Student_userLogin = async (req, res, err) => {
-  try {
-    const { email, password } = await req.body;
-
-    const userFetch = await Student_user.findOne({ email });
-    if (!userFetch) {
-      throw Error("Email Not Available in DB");
-    }
-    const hashedpass = userFetch.password;
-    const passwordMatch = await verifyHashedData(password, hashedpass);
-  if (!passwordMatch || !userFetch.verified) {
-    res.status(401).json({ message: "Invalid credentials" });
-  }
-  else{
-    const image = await Image.findOne({ user: userFetch._id });
-    const tokeData = { userId: userFetch._id, email };
-    const token = await createToken(tokeData);
-    userFetch.token = token;
-    console.log(userFetch);
-      res.status(200).json({
-        userFetch,
-        image
-      })
-  }
-   
-  } catch (error) {
-    throw error;
-  }
-};
-
-const updateStudent_user = async (req, res, next) => {
-  const userId = req.params.id; // assuming that you are passing the user id as a parameter
+const updateperson = async (req, res, next) => {
+  const personId = req.params.id; // assuming that you are passing the person id as a parameter
   let { name, email, phone1, phone2, state, city, dob } = req.body;
   name = name.trim();
   email = email.trim();
@@ -109,54 +73,30 @@ const updateStudent_user = async (req, res, next) => {
   city = city.trim();
   dob = dob.trim();
   const updateFields = { name, email, phone1, phone2, state, city, dob };
-  const user = await Student_user.findByIdAndUpdate(userId, updateFields, { new: true });
+  const person = await Student_person.findByIdAndUpdate(personId, updateFields, { new: true });
   
-  if (!user) {
+  if (!person) {
     return res.status(500).json({
-      message: "user not found",
+      message: "person not found",
     });
   }
   
   return res.status(200).json({
-    Student_user: user,
+    Student_person: person,
   });
 };
 
-// const updateStudent_user = async (req, res, next) => {
-//   const id = req.params.id;
-//   const { name, email, password } = req.body;
-//   let user;
-//   try {
-//     user = await Student_user.findByIdAndUpdate(id, { name, email, password });
-//   } catch (err) {
-//     next(err);
-//   }
-//   if (!user) {
-//     return res.status(500).json({
-//       message: "Internal Server Error",
-//     });
-//   }
-//   return res.status(200).json({
-//     message: "Update Success",
-//   });
-// };
 
-const currentUser = async (req, res, next) => {
-  return res.status(200).json({
-    res: req.user,
-  });
-};
-
-const deleteStudent_User = async (req, res, next) => {
+const deleteperson = async (req, res, next) => {
   const id = req.params.id;
-  let user;
+  let person;
   try {
-    user = await Student_user.findByIdAndRemove(id);
-    console.log(user);
+    person = await Person.findByIdAndRemove(id);
+    console.log(person);
   } catch (err) {
     next(err);
   }
-  if (!user) {
+  if (!person) {
     return res.status(500).json({
       message: "Internal Server Error",
     });
@@ -165,49 +105,51 @@ const deleteStudent_User = async (req, res, next) => {
     message: "Deleted Succcess",
   });
 };
-const getStudet_user = async (req, res, next) => {
+
+
+const getperson = async (req, res, next) => {
   const id = req.params.id;
-  let user;
+  let person;
   try {
-    user = await Student_user.findById(id);
-    console.log(user);
+    person = await Student_person.findById(id);
+    console.log(person);
   } catch (err) {
     next(err);
   }
-  if (!user) {
+  if (!person) {
     return res.status(500).json({
       message: "Internal Server Error",
     });
   }
   return res.status(200).json({
-    user: user,
+    person: person,
   });
 };
 
-const authUser = (req, res) => {
+const authperson = (req, res) => {
   res
     .status(200)
-    .send(`you are in the private route  ${req.currentUser.email}`);
+    .send(`you are in the private route  ${req.currentperson.email}`);
 };
 
 
 
 const uploadImg = async (req, res) => {
   try {
-    const studentUser = await Student_user.findById(req.params.id);
-    const oldImage = await StudentUserImg.findOne({ user: studentUser._id });
+    const studentperson = await Student_person.findById(req.params.id);
+    const oldImage = await StudentpersonImg.findOne({ person: studentperson._id });
     if (oldImage) {
-      await StudentUserImg.deleteOne({ _id: oldImage._id });
+      await StudentpersonImg.deleteOne({ _id: oldImage._id });
     }
-    const newImage = new StudentUserImg({
-      user: studentUser._id,
+    const newImage = new StudentpersonImg({
+      person: studentperson._id,
       filename: req.file.filename,
       filepath: req.file.path
     });
     await newImage.save();
     res.status(200).json({
       message:'File uploaded successfully.',
-      studentUser
+      studentperson
   });
   } catch (err) {
     console.error(err);
@@ -217,12 +159,9 @@ const uploadImg = async (req, res) => {
 
 
 
-exports.getAllStudent_user = getAllStudent_user;
+exports.getAllPerson = getAllPerson;
 exports.createPerson = createPerson;
-exports.updateStudent_user = updateStudent_user;
-exports.deleteStudent_User = deleteStudent_User;
-exports.getStudet_user = getStudet_user;
-exports.currentUser = currentUser;
-exports.Student_userLogin = Student_userLogin;
-exports.authUser = authUser;
+exports.updateperson = updateperson;
+exports.deleteperson = deleteperson;
+exports.authperson = authperson;
 exports.uploadImg = uploadImg;

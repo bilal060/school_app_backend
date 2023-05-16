@@ -26,9 +26,7 @@ const eventRouter = require('./routes/eventsRoutes')
 const faqrouter = require('./routes/faqRoute');
 const Booksrouter = require('./routes/bookRoutes');
 const imageGalleryrouter = require('./routes/imageGallery');
-const PersonRoute = require('./routes/personRoute');
-const { Bookupload } = require('./Middleware/uploadImage');
-
+// const PersonRoute = require('./routes/personRoute');
 const whitelist = ["http://localhost:port"]
 const corsOptions = {
     origin: function (origin, callback) {
@@ -56,7 +54,7 @@ app.use('',eventRouter)
 app.use('',faqrouter)
 app.use('',Booksrouter)
 app.use('',imageGalleryrouter)
-app.use('',PersonRoute)
+// app.use('',PersonRoute)
 
 
 

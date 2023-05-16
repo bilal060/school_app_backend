@@ -1,11 +1,11 @@
 const express = require('express')
-const { createPerson } = require('../Controller/newPerson');
+const { createPerson,getAllPerson,updateperson,deleteperson } = require('../Controller/newPerson');
 const PersonRoute = express.Router()
 
 PersonRoute.post('/person',createPerson);
-// Alertrouter.get('/Alerts',getAlerts);
-// Alertrouter.get('/Alerts/:id',getAlert);
-// Alertrouter.patch('/Alerts/:id',updateAlert);
+PersonRoute.get('/person',getAllPerson);
+PersonRoute.get('/person/:id',updateperson);
+PersonRoute.patch('/person/:id',deleteperson);
 // Alertrouter.delete('/Alerts/:id',deleteAlert);
 
-module.exports =PersonRoute;
+module.exports =PersonRoute;     
