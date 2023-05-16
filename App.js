@@ -15,6 +15,7 @@ if (!fs.existsSync(uploadPath)) {
   fs.mkdirSync(uploadPath, { recursive: true });
 }
 const cors = require("cors")
+app.use(cors())
 const otpRouter = require('./routes/otpRoute')
 const countryRoute = require('./routes/countryRoute')
 const process = require('process');
@@ -27,18 +28,8 @@ const faqrouter = require('./routes/faqRoute');
 const Booksrouter = require('./routes/bookRoutes');
 const imageGalleryrouter = require('./routes/imageGallery');
 // const PersonRoute = require('./routes/personRoute');
-const whitelist = ["http://localhost:port"]
-const corsOptions = {
-    origin: function (origin, callback) {
-        if (!origin || whitelist.indexOf(origin) !== -1) {
-            callback(null, true)
-        } else {
-            callback(new Error("Not allowed by CORS"))
-        }
-    },
-    credentials: true,
-}
-app.use(cors(corsOptions))
+
+
 app.use('/uploads', express.static(path.join('uploads', '/')));
 app.use(express.json())
 //Routes
