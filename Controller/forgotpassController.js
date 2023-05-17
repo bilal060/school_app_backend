@@ -15,7 +15,7 @@ const verifyOTP = async ({ email, otp }) => {
       if (!otpMatched) {
         throw Error("No OTP available on this email");
       }
-  
+
       const { expireAT } = otpMatched;
       if (expireAT < Date.now()) {
         await OTP.deleteOne({ email });
@@ -60,7 +60,7 @@ const sendPassOTP = async (req,res)=>{
           })
 
     } catch (error) {
-         
+
         throw error
     }
 
@@ -83,7 +83,7 @@ const resetPass = async (req,res)=>{
         }
         if(newPass.length<8){
             throw Error('Pass to short ')
-        } 
+        }
         const hashnewPass = await hashData(newPass)
        const updateUser = await User.updateOne({email},{password:hashnewPass})
         await deleteOTP({email})
@@ -91,7 +91,45 @@ const resetPass = async (req,res)=>{
             message:"Your Password Reset Done"
         })
     } catch (error) {
-         
+
+        throw error
+    }
+
+
+}
+
+const sendStudentPassOTP = async (req,res)=>{
+
+    try {
+        const {email} = req.body
+        if(!email){
+            throw Error('Email Required')
+        }
+
+        const existingData = await Student_user.findOne({email})
+        if(!existingData){
+            throw Error('User not exist ')
+        }
+
+        if(!existingData.verified){
+            throw Error('User not verified ')
+        }
+
+        const otpDetails = {
+            email,
+            subject: "Password Reset",
+            message: "Verify your email with bellow code..!",
+            duration: 1,
+        };
+        const createOtp =  sentOTP(otpDetails)
+        res.status(200).json({
+            message:"Reset Password OTP send on your mail box",
+            createOtp
+
+        })
+
+    } catch (error) {
+
         throw error
     }
 
@@ -117,7 +155,7 @@ const resetStudentPass = async (req,res)=>{
         }
         if(newPass.length<8){
             throw Error('Pass to short ')
-        } 
+        }
         const hashnewPass = await hashData(newPass)
        const updateUser = await Student_user.updateOne({email},{password:hashnewPass})
         await deleteOTP({email})
@@ -126,7 +164,7 @@ const resetStudentPass = async (req,res)=>{
             updateUser
         })
     } catch (error) {
-         
+
         throw error
     }
 
@@ -135,4 +173,4 @@ const resetStudentPass = async (req,res)=>{
 
 
 
-module.exports = {sendPassOTP,resetPass,resetStudentPass };
+module.exports = {sendPassOTP,resetPass,resetStudentPass, sendStudentPassOTP };
