@@ -108,7 +108,7 @@ const Student_userLogin = async (req, res, err) => {
       userFetch.token = token;
       console.log(userFetch);
       res.status(200).json({
-        Student_user: userFetch,
+        userFetch,
         image,
       });
     }
@@ -118,7 +118,9 @@ const Student_userLogin = async (req, res, err) => {
 };
 
 const updateStudent_user = async (req, res, next) => {
-  try {
+  try{
+
+  
     const userId = req.params.id;
     let { name, email, phone1, phone2, state, city, dob, base64Image } = req.body;
     name = name.trim();
@@ -129,17 +131,21 @@ const updateStudent_user = async (req, res, next) => {
     dob = dob.trim();
     const updateFields = { name, email, phone1, phone2, state, city, dob };
     const studentUser = await Student_user.findById(userId);
+    let newImage 
+    let oldImage
     if (base64Image) {
-      const oldImage = await StudentUserImg.findOne({ user: studentUser._id });
+       oldImage = await StudentUserImg.findOne({ user: studentUser._id });
       if (oldImage) {
         await StudentUserImg.deleteOne({ _id: oldImage._id });
       }
-      const newImage = new StudentUserImg({
-        user: studentUser._id,
-        base64Image: base64Image,
-      });
-      await newImage.save();
-    }
+     newImage = new StudentUserImg({
+      user: studentUser._id,
+      base64Image: base64Image,
+    });
+    await newImage.save();
+  }else{
+     oldImage = await StudentUserImg.findOne({ user: studentUser._id });
+  }
     const user = await Student_user.findByIdAndUpdate(userId, updateFields, {
       new: true,
     });
@@ -147,15 +153,23 @@ const updateStudent_user = async (req, res, next) => {
       return res.status(500).json({
         message: "User not found",
       });
-    }
 
-    return res.status(200).json({
-      Student_user: user,
-      image:newImage
-    });
-  } catch (err) {
-    return res.status(400).json({
-      error: err,
+    }
+    if(base64Image){
+      res.status(200).json({
+        'userFetch': user,
+        'image':newImage
+      });
+    }else{
+      res.status(200).json({
+        'userFetch': user,
+        'image':oldImage
+      });
+    }
+   
+  }catch(err){
+    res.status(400).json({
+      'err':err.message
     });
   }
 };
