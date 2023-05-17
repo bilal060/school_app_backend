@@ -110,27 +110,36 @@ const Student_userLogin = async (req, res, err) => {
 };
 
 const updateStudent_user = async (req, res, next) => {
-  const userId = req.params.id; // assuming that you are passing the user id as a parameter
-  let { name, email, phone1, phone2, state, city, dob } = req.body;
-  name = name.trim();
-  email = email.trim();
-  phone1 = phone1.trim();
-  phone2 = phone2.trim();
-  state = state.trim();
-  city = city.trim();
-  dob = dob.trim();
-  const updateFields = { name, email, phone1, phone2, state, city, dob };
-  const user = await Student_user.findByIdAndUpdate(userId, updateFields, { new: true });
-  
-  if (!user) {
-    return res.status(500).json({
-      message: "user not found",
+  try{
+    const userId = req.params.id; // assuming that you are passing the user id as a parameter
+    let { name, email, phone1, phone2, state, city, dob } = req.body;
+    name = name.trim();
+    phone1 = phone1.trim();
+    phone2 = phone2.trim();
+    state = state.trim();
+    city = city.trim();
+    dob = dob.trim();
+    const updateFields = { name, email, phone1, phone2, state, city, dob };
+    const user = await Student_user.findByIdAndUpdate(userId, updateFields, { new: true });
+    
+    if (!user) {
+      return res.status(500).json({
+        message: "user not found",
+      });
+    }
+    
+    return res.status(200).json({
+      Student_user: user,
+    });
+
+  }catch(err){
+   return res.status(400).json({
+      err: err,
     });
   }
+
   
-  return res.status(200).json({
-    Student_user: user,
-  });
+
 };
 
 // const updateStudent_user = async (req, res, next) => {
@@ -206,7 +215,6 @@ const authUser = (req, res) => {
 const uploadImg = async (req, res) => {
   try {
     const { base64Image } = req.body;
-    let prefixedImage = "data:image/jpeg;base64," + base64Image;
     const studentUser = await Student_user.findById(req.params.id);
     const oldImage = await StudentUserImg.findOne({ user: studentUser._id });
     if (oldImage) {
@@ -214,7 +222,7 @@ const uploadImg = async (req, res) => {
     }
     const newImage = new StudentUserImg({
       user: studentUser._id,
-      base64Image: prefixedImage,
+      base64Image: base64Image,
     });
     await newImage.save();
     res.status(200).json({
