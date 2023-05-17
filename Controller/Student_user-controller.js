@@ -1,17 +1,18 @@
 const { findByIdAndRemove, findById, findOne } = require("../Model/User");
 const Student_user = require("../Model/Student_user");
-const Image =require('../Model/UserImage')
+const Image = require("../Model/UserImage");
 const sendEmail = require("../utils/sendEmail");
 const env = require("dotenv").config();
 const { AUTH_EMAIL } = process.env;
-const StudentUserImg =require('../Model/UserImage')
+const StudentUserImg = require("../Model/UserImage");
 const generateOTP = require("../utils/generateOTP");
 const OTP = require("../Model/otp");
 const jwt = require("jsonwebtoken");
 const { hashData, verifyHashedData } = require("../Middleware/hashDataHandler");
 const createToken = require("../Middleware/createToken");
-const { verifyStudentEmailwithOTP} = require("../Controller/verifyemailController")
-
+const {
+  verifyStudentEmailwithOTP,
+} = require("../Controller/verifyemailController");
 
 const getAllStudent_user = async (req, res, next) => {
   let getStudent_users;
@@ -30,10 +31,19 @@ const getAllStudent_user = async (req, res, next) => {
   });
 };
 const studentSignUp = async (req, res, next) => {
-  let { name, email,password='1234567', phone1, phone2, state, city, dob } = req.body;
+  let {
+    name,
+    email,
+    password = "1234567",
+    phone1,
+    phone2,
+    state,
+    city,
+    dob,
+  } = req.body;
   name = name.trim();
   email = email.trim();
-   password = password.trim();
+  password = password.trim();
   phone1 = phone1.trim();
   phone2 = phone2.trim();
   state = state.trim();
@@ -44,7 +54,7 @@ const studentSignUp = async (req, res, next) => {
     throw Error("invalid email");
   }
   if (
-    !(name || email||password  || phone1 || phone2 || state || city || dob)
+    !(name || email || password || phone1 || phone2 || state || city || dob)
   ) {
     return res.status(500).json({
       message: "Internal server Error",
@@ -89,30 +99,28 @@ const Student_userLogin = async (req, res, err) => {
     }
     const hashedpass = userFetch.password;
     const passwordMatch = await verifyHashedData(password, hashedpass);
-  if (!passwordMatch || !userFetch.verified) {
-    res.status(401).json({ message: "Invalid credentials" });
-  }
-  else{
-    const image = await Image.findOne({ user: userFetch._id });
-    const tokeData = { userId: userFetch._id, email };
-    const token = await createToken(tokeData);
-    userFetch.token = token;
-    console.log(userFetch);
+    if (!passwordMatch || !userFetch.verified) {
+      res.status(401).json({ message: "Invalid credentials" });
+    } else {
+      const image = await Image.findOne({ user: userFetch._id });
+      const tokeData = { userId: userFetch._id, email };
+      const token = await createToken(tokeData);
+      userFetch.token = token;
+      console.log(userFetch);
       res.status(200).json({
-        userFetch,
-        image
-      })
-  }
-   
+        Student_user: userFetch,
+        image,
+      });
+    }
   } catch (error) {
     throw error;
   }
 };
 
 const updateStudent_user = async (req, res, next) => {
-  try{
-    const userId = req.params.id; // assuming that you are passing the user id as a parameter
-    let { name, email, phone1, phone2, state, city, dob } = req.body;
+  try {
+    const userId = req.params.id;
+    let { name, email, phone1, phone2, state, city, dob, base64Image } = req.body;
     name = name.trim();
     phone1 = phone1.trim();
     phone2 = phone2.trim();
@@ -120,46 +128,39 @@ const updateStudent_user = async (req, res, next) => {
     city = city.trim();
     dob = dob.trim();
     const updateFields = { name, email, phone1, phone2, state, city, dob };
-    const user = await Student_user.findByIdAndUpdate(userId, updateFields, { new: true });
-    
+    const studentUser = await Student_user.findById(userId);
+    if (base64Image) {
+      const oldImage = await StudentUserImg.findOne({ user: studentUser._id });
+      if (oldImage) {
+        await StudentUserImg.deleteOne({ _id: oldImage._id });
+      }
+      const newImage = new StudentUserImg({
+        user: studentUser._id,
+        base64Image: base64Image,
+      });
+      await newImage.save();
+    }
+    const user = await Student_user.findByIdAndUpdate(userId, updateFields, {
+      new: true,
+    });
     if (!user) {
       return res.status(500).json({
-        message: "user not found",
+        message: "User not found",
       });
     }
-    
+
     return res.status(200).json({
       Student_user: user,
+      image:newImage
     });
-
-  }catch(err){
-   return res.status(400).json({
-      err: err,
+  } catch (err) {
+    return res.status(400).json({
+      error: err,
     });
   }
-
-  
-
 };
 
-// const updateStudent_user = async (req, res, next) => {
-//   const id = req.params.id;
-//   const { name, email, password } = req.body;
-//   let user;
-//   try {
-//     user = await Student_user.findByIdAndUpdate(id, { name, email, password });
-//   } catch (err) {
-//     next(err);
-//   }
-//   if (!user) {
-//     return res.status(500).json({
-//       message: "Internal Server Error",
-//     });
-//   }
-//   return res.status(200).json({
-//     message: "Update Success",
-//   });
-// };
+
 
 const currentUser = async (req, res, next) => {
   return res.status(200).json({
@@ -210,8 +211,6 @@ const authUser = (req, res) => {
     .send(`you are in the private route  ${req.currentUser.email}`);
 };
 
-
-
 const uploadImg = async (req, res) => {
   try {
     const { base64Image } = req.body;
@@ -226,16 +225,14 @@ const uploadImg = async (req, res) => {
     });
     await newImage.save();
     res.status(200).json({
-      message: 'Image added to the database successfully.',
-      studentUser
+      message: "Image added to the database successfully.",
+      studentUser,
     });
   } catch (err) {
     console.error(err);
-    res.status(500).send('An error occurred while uploading the file.');
+    res.status(500).send("An error occurred while uploading the file.");
   }
-}
-
-
+};
 
 exports.getAllStudent_user = getAllStudent_user;
 exports.studentSignUp = studentSignUp;
