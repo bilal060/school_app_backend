@@ -65,7 +65,6 @@ password:hashPassword,
     users: user,
   });
 }
-
 const userLogin = async (req,res,err)=>{
 
 try {
@@ -94,7 +93,6 @@ throw error
   
 }
 }
-
 const updateUser = async (req, res, next) => {
    const id = req.params.id;
     const { name, email, password } = req.body ;
@@ -113,13 +111,11 @@ const updateUser = async (req, res, next) => {
        message:'Update Success'
     });
   };
-
   const currentUser = async (req, res, next) => {
      return res.status(200).json({
       res:req.user
      });
    };
-
   const deleteUser = async (req, res, next) => {
     const id = req.params.id;
      let user;
@@ -156,7 +152,6 @@ const updateUser = async (req, res, next) => {
      user:user
      });
    };
-
    const authUser = (req,res)=>{
     res.status(200).send(`you are in the private route  ${req.currentUser.email}`)
    }

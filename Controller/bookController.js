@@ -1,5 +1,3 @@
-
-
 const Book = require('../Model/books');
 const path = require('path');
 const uploadPath = path.join(__dirname, 'uploads', 'books');
@@ -25,7 +23,6 @@ const AddBook =  async (req, res) => {
     res.status(500).send('An error occurred to store Data');
   }
 };
-
 const getBooks = async (req, res) => {
     try {
       const book = await Book.find();
@@ -38,8 +35,6 @@ const getBooks = async (req, res) => {
       res.status(500).send(err);
     }
   }
-
-
   const getBook = async (req, res) => {
     try {
       const book = await Book.findById(req.params.id);
@@ -60,7 +55,6 @@ const getBooks = async (req, res) => {
       res.status(500).send(err);
     }
   };
-
   const updateBook = async (req, res) => {
     try {
       const { id } = req.params;
@@ -91,7 +85,6 @@ const getBooks = async (req, res) => {
       res.status(500).send('An error occurred while updating the book');
     }
   };
-
   const deleteBook= async (req, res) => {
     try {
       const book = await Book.findByIdAndDelete(req.params.id);
@@ -106,7 +99,6 @@ const getBooks = async (req, res) => {
       res.status(500).send(err);
     }
   };
-
 
 exports.AddBook = AddBook;
 exports.getBooks = getBooks;

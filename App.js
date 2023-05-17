@@ -1,5 +1,5 @@
 const express = require('express')
-
+const morgan = require('morgan');
 const mongoose = require('mongoose');
 const Userrouter = require('./routes/user-routes');
 const emailRouter = require('./routes/emailRoute');
@@ -29,7 +29,9 @@ const Booksrouter = require('./routes/bookRoutes');
 const imageGalleryrouter = require('./routes/imageGallery');
 // const PersonRoute = require('./routes/personRoute');
 
-
+if (process.env.NODE_ENV === 'development') {
+    app.use(morgan('dev'));
+  }
 app.use('/uploads', express.static(path.join('uploads', '/')));
 app.use(express.json())
 //Routes
