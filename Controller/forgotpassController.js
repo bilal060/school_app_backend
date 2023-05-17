@@ -98,7 +98,7 @@ const resetPass = async (req,res)=>{
 
 }
 
-const sendStudentPassOTP = async (req,res)=>{
+const resetStudentPassWithOTP = async (req,res)=>{
 
     try {
         const {email} = req.body
@@ -173,4 +173,4 @@ const resetStudentPass = async (req,res)=>{
 
 
 
-module.exports = {sendPassOTP,resetPass,resetStudentPass, sendStudentPassOTP };
+module.exports = {sendPassOTP,resetPass,resetStudentPass, resetStudentPassWithOTP };
