@@ -1,53 +1,48 @@
+
 const multer = require('multer');
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, 'uploads/')
-    },
-    filename: function (req, file, cb) {
-      cb(null, file.originalname)
-    }
-  })
-  const upload = multer({ 
-    storage: storage, 
-    fileFilter: function (req, file, cb) {
-      if (file.fieldname === 'image') {
-        cb(null, true);
-      } else {
-        cb(new Error('Unexpected field'));
+const { v4: uuidv4 } = require('uuid');
+
+const MIME_TYPE_MAP = {
+    'image/png': 'png',
+    'image/jpg': 'jpg',
+    'image/jpeg': 'jpeg'
+};
+
+const upload = multer({
+    limits: 500000000,
+    storage: multer.diskStorage({
+        destination: (req, file, cb) => {
+            cb(null, 'uploads/');
+        },
+        filename: (req, file, cb) => {
+            const ext = MIME_TYPE_MAP[file.mimetype];
+            cb(null, uuidv4() + '.' + ext);
+        },
+        fileFilter: (req, file, cb) => {
+            const isValid = !!MIME_TYPE_MAP[file.mimetype];
+            const error = isValid ? null : new Error('Invalid mime type');
+            cb(error, isValid);
+        }
+    })
+});
+const bookUpload = multer({
+  limits: 500000000,
+  storage: multer.diskStorage({
+      destination: (req, file, cb) => {
+          cb(null, 'uploads/books');
+      },
+      filename: (req, file, cb) => {
+          const ext = MIME_TYPE_MAP[file.mimetype];
+          cb(null, uuidv4() + '.' + ext);
+      },
+      fileFilter: (req, file, cb) => {
+          const isValid = !!MIME_TYPE_MAP[file.mimetype];
+          const error = isValid ? null : new Error('Invalid mime type');
+          cb(error, isValid);
       }
-    }
   })
-  const bookstorage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, 'uploads/books');
-    },
-    filename: (req, file, cb) => {
-      cb(null, file.originalname);
-    }
-  });
-  const Bookupload = multer({storage: bookstorage });
+});
 
-  exports.upload = upload
-  exports.Bookupload = Bookupload
+module.exports = upload;
+module.exports = bookUpload;
 
-  // const userStorage = multer.diskStorage({
-  //   destination: function (req, file, cb) {
-  //     cb(null, './uploads/Student_UserImage');
-  //   },
-  //   filename: function (req, file, cb) {
-  //     cb(null, file.fieldname + '-' + Date.now() + '.' + file.originalname.split('.').pop());
-  //   }
-  // });
-  
-  // const adminStorage = multer.diskStorage({
-  //   destination: function (req, file, cb) {
-  //     cb(null, './uploads/Admin_UserImage');
-  //   },
-  //   filename: function (req, file, cb) {
-  //     cb(null, file.fieldname + '-' + Date.now() + '.' + file.originalname.split('.').pop());
-  //   }
-  // });
-  
-  // const uploadUserImage = multer({ storage: userStorage }); 
-  // const uploadAdminImage = multer({ storage: adminStorage });
-  

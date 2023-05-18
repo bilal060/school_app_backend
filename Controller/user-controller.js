@@ -159,16 +159,16 @@ const UpdateUserSetting =  async (req, res) => {
   try {
     const userId = req.params.id;
     let  {name , password} = req.body
-    name = name.trim()
-    password = password.trim()
     const user = await Users.findById(userId);
     if (!user) {
       return res.status(404).send('User not found');
     }
     if (name) {
+      name = name.trim()
       user.name =name;
     }
     if (password) {
+      password = password.trim()
        newpass = password
       const hashdata = await hashData(newpass)
       user.password = hashdata
@@ -176,14 +176,13 @@ const UpdateUserSetting =  async (req, res) => {
     if (req.file) {
       user.image = req.file.path;
     }
+    console.log(req.file)
     await user.save();
     res.status(200).json({
       'messgae':'User updated successfully',
       'user':user
     });
   } catch (err) {
-    // handle any errors that occurred during the update process
-    console.error(err);
     res.status(500).send('An error occurred while updating the user');
   }
 }

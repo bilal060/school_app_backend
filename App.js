@@ -33,6 +33,7 @@ if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
   }
 app.use('/uploads', express.static(path.join('uploads', '/')));
+app.use('/uploads/books', express.static(path.join('uploads', 'books')));
 app.use(express.json())
 //Routes
 app.use('',Userrouter)

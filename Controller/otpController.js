@@ -32,8 +32,6 @@ const sentOTP = async ({ email, subject, message, duration = 1 }) => {
     throw error;
   }
 };
-
-
 const verifyOTP = async ({email ,otp}) => {
   try { 
     const otpMatched = await OTP.findOne({ email });
@@ -54,7 +52,6 @@ const verifyOTP = async ({email ,otp}) => {
     throw error;
   }
 };
-
 const deleteOTP = async ({email}) => {
   try {
     if(!email){

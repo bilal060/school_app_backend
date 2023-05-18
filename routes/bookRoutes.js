@@ -3,13 +3,13 @@ const { AddBook,getBooks,getBook,updateBook,deleteBook } = require('../Controlle
 const Booksrouter = express.Router()
 
 
-const { Bookupload } = require('../Middleware/uploadImage');
+const  bookUpload  = require('../Middleware/uploadImage');
 
 
-Booksrouter.post('/Book',Bookupload.single('image'),AddBook);
+Booksrouter.post('/Book',bookUpload.single('image'),AddBook);
 Booksrouter.get('/Book',getBooks);
 Booksrouter.get('/Book/:id',getBook);
-Booksrouter.patch('/Book/:id',Bookupload.single('image'),updateBook);
+Booksrouter.patch('/Book/:id',bookUpload.single('image'),updateBook);
 Booksrouter.delete('/Book/:id',deleteBook);
 
 module.exports =Booksrouter;
