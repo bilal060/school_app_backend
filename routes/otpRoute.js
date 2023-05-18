@@ -1,4 +1,4 @@
-const {sentOTP,verifyOTP} = require('../Controller/otpController')
+const {sentOTP,verifyOTP,resendOTP} = require('../Controller/otpController')
 
 const express = require('express')
 var worldMapData = require('city-state-country');
@@ -18,7 +18,6 @@ otpRouter.post('/otp', async(req, res) => {
    res.status(500).json({ 
       message:"internal Server Error"
    });
-   console.log(err)
 }
 })
 otpRouter.post('/otpverify',async (req, res) => {
@@ -34,9 +33,8 @@ otpRouter.post('/otpverify',async (req, res) => {
       res.status(500).json({ 
          message:"internal Server Error"
       });
-      console.log(err)
    }
    })
-
+otpRouter.post('/resendOTP',resendOTP)
 
 module.exports = otpRouter;
