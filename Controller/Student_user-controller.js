@@ -158,6 +158,8 @@ const uploadImg =catchAsync( async (req, res,next) => {
       user: studentUser._id,
       image: imagepath,
     });
+    console.log('req.newImage======================');
+    console.log(newImage);
     await newImage.save();
     res.status(200).json({
       message: "Image added to the database successfully.",
