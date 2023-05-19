@@ -39,13 +39,11 @@ const verifyOTP = async ({email ,otp}) => {
     if (!otpMatched) {
       throw Error("No OTP Matched By this email");
     }
-
     const { expireAT } = otpMatched;
     if (expireAT < Date.now()) {
       await OTP.deleteOne({ email });
       return  Error("Your OTP Expired");
     }
-
     const hashotp = otpMatched.otp;
     const validotp = await verifyHashedData(otp, hashotp);
     return validotp

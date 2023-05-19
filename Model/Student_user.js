@@ -1,6 +1,6 @@
 const { default: mongoose, models } = require("mongoose");
 const { scheduler } = require("timers/promises");
-
+const validator = require('validator');
 const Schema = mongoose.Schema;
 
 const Student_userSchema = new Schema({
@@ -10,8 +10,10 @@ const Student_userSchema = new Schema({
   },
   email: {
     type: String,
-    required: true,
-
+    required: [true, 'Please provide your email'],
+    unique: true,
+    lowercase: true,
+    validate: [validator.isEmail, 'Please provide a valid email']
   },
   phone1: {
     type: String,

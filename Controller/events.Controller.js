@@ -1,4 +1,6 @@
 const Event = require("../Model/events");
+const catchAsync = require('../utils/catchAsync')
+const AppError = require('../utils/appError')
 
 const CreateEvent = async (req, res) => {
   try {
@@ -7,10 +9,7 @@ const CreateEvent = async (req, res) => {
       date,
       time
     } = req.body;
-    name = name.trim();
-    date = date.trim();
-    time.start = time.start.trim();
-    time.end = time.end.trim();
+
     const newEvent = new Event({
       name: name,
       date: new Date(date),

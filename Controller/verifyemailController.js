@@ -7,8 +7,8 @@ const User = require("../Model/User");
 const Student_user = require("../Model/Student_user");
 const { AUTH_EMAIL } = process.env;
 const { deleteOTP,sentOTP ,verifyOTP } = require("../Controller/otpController");
-
-
+const catchAsync = require('../utils/catchAsync')
+const AppError = require('../utils/appError')
 
 const verifyEmailwithOTP = async ({email}) => {
   try {
@@ -46,9 +46,6 @@ const verifyStudentEmailwithOTP = async ({email}) => {
     throw error;
   }
 };
-
-
-
 const verifyEmailUser = async ({email,otp}) => {
   try {
     const validOTP = await verifyOTP({ email, otp });
@@ -69,14 +66,10 @@ const verifyEmailUser = async ({email,otp}) => {
 
 const verifyEmailStudetUser = async ({email,otp})  => {
   try {
-    if (!(email, otp)) {
-      throw Error("Values required ");
-    }
     const validOTP = await verifyOTP({ email, otp });
     if (!validOTP) {
       throw Error("Your OTP expire ");
     }
-    //update user verified
     await Student_user.updateOne({email},{verified:true})
     await deleteOTP({email});
     return {email ,verified:true}
