@@ -1,5 +1,6 @@
 const {sentOTP,verifyOTP,resendOTP,resendStudentOTP} = require('../Controller/otpController')
-
+const catchAsync = require("../utils/catchAsync");
+const AppError = require("../utils/appError");
 const express = require('express')
 var worldMapData = require('city-state-country');
 
@@ -20,21 +21,16 @@ otpRouter.post('/otp', async(req, res) => {
    });
 }
 })
-otpRouter.post('/otpverify',async (req, res) => {
-   try { 
+otpRouter.post('/otpverify',catchAsync( async (req, res,next) => {
      let { email, otp } = req.body;
      if (!(email, otp)) {
-       throw Error("Your Email and otp values required");
+      return  next(new AppError('Email or Otp Value required', 400));
      }
      const OTPverify = await verifyOTP({email, otp})
      res.status(201).json({ 
-       OTPverify,
-    });}catch(err){
-      res.status(500).json({ 
-         message:"internal Server Error"
-      });
-   }
-   })
+      'verify':true,
+    })
+   }))
 otpRouter.post('/resendOTP',resendOTP)
 otpRouter.post('/resendStudentOTP',resendStudentOTP)
 

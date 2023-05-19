@@ -2,9 +2,9 @@ const Event = require("../Model/events");
 const catchAsync = require('../utils/catchAsync')
 const AppError = require('../utils/appError')
 
-const CreateEvent = async (req, res) => {
-  try {
-    let {
+const CreateEvent = catchAsync(async (req, res) => {
+
+    const {
       name,
       date,
       time
@@ -20,10 +20,8 @@ const CreateEvent = async (req, res) => {
     });
     await newEvent.save();
     res.status(201).json(newEvent);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+
+});
 
 
 const getEvents = async (req, res) => {

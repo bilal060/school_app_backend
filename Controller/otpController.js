@@ -12,6 +12,7 @@ const sentOTP = async ({ email, subject, message, duration = 1 }) => {
   try { 
     await OTP.deleteOne({ email });
     const generateotp = await generateOTP();
+    console.log(generateotp)
     const mailOptions = {
       from: AUTH_EMAIL,
       to: email,

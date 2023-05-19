@@ -8,6 +8,9 @@ const Student_user = require("../Model/Student_user");
 const { create } = require("../Model/otp");
 const { deleteOTP,sentOTP } = require("./otpController");
 const { AUTH_EMAIL } = process.env;
+
+
+
 const verifyOTP = async ({ email, otp }) => {
     try {
       const otpMatched = await OTP.findOne({ email });

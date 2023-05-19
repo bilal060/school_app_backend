@@ -4,5 +4,6 @@ const passRouter = express.Router()
 passRouter.post('/resetPassWithOTP',sendPassOTP)
 passRouter.post('/resetStudentPassWithOTP',resetStudentPassWithOTP)
 passRouter.post('/reset',resetPass)
+passRouter.post('/resetStudentPass',resetStudentPass)
 passRouter.post('/verifyOTP',verifyOTP)
 module.exports = passRouter;

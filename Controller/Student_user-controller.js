@@ -142,7 +142,7 @@ const getStudet_user =catchAsync( async (req, res, next) => {
     user: user,
   });
 });
-const uploadImg =catchAsync( async (req, res) => {
+const uploadImg =catchAsync( async (req, res,next) => {
     const imagepath = req.file?.path;
     const studentUser = await Student_user.findById(req.params.id);
     if(!studentUser){
