@@ -1,4 +1,4 @@
-const {sentOTP,verifyOTP,resendOTP} = require('../Controller/otpController')
+const {sentOTP,verifyOTP,resendOTP,resendStudentOTP} = require('../Controller/otpController')
 
 const express = require('express')
 var worldMapData = require('city-state-country');
@@ -36,5 +36,6 @@ otpRouter.post('/otpverify',async (req, res) => {
    }
    })
 otpRouter.post('/resendOTP',resendOTP)
+otpRouter.post('/resendStudentOTP',resendStudentOTP)
 
 module.exports = otpRouter;

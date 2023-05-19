@@ -8,42 +8,53 @@ const Student_user = require("../Model/Student_user");
 const { create } = require("../Model/otp");
 const { deleteOTP,sentOTP } = require("./otpController");
 const { AUTH_EMAIL } = process.env;
-
 const verifyOTP = async ({ email, otp }) => {
     try {
       const otpMatched = await OTP.findOne({ email });
       if (!otpMatched) {
-        throw Error("No OTP available on this email");
+     return   res.status(400).json({
+        'err':'No OTP available on this email'
+        })
       }
 
       const { expireAT } = otpMatched;
       if (expireAT < Date.now()) {
         await OTP.deleteOne({ email });
-        throw Error("Your OTP Expired");
+      return  res.status(400).json({
+            'err':'Your OTP Expired'
+            })
       }
       const hashotp = otpMatched.otp;
       const validotp = await verifyHashedData(otp, hashotp);
       return validotp;
     } catch (error) {
-      throw error;
+        res.status(400).json({
+            error
+            })
     }
   };
-
 const sendPassOTP = async (req,res)=>{
 
     try {
         const {email} = req.body
         if(!email){
-            throw Error('Email Required')
+            return  res.status(400).json({
+                'err':'Email Required'
+                })
         }
 
         const existingData = await User.findOne({email})
         if(!existingData){
-            throw Error('User not exist ')
+            return  res.status(400).json({
+                'err':'User not exist'
+                })
         }
 
         if(!existingData.verified){
-            throw Error('User not verified ')
+            return  res.status(400).json({
+                'err':'User not verified '
+                })
+            
         }
 
         const otpDetails = {
@@ -61,7 +72,9 @@ const sendPassOTP = async (req,res)=>{
 
     } catch (error) {
 
-        throw error
+        res.status(400).json({
+            error
+            })
     }
 
 
@@ -71,18 +84,26 @@ const resetPass = async (req,res)=>{
     try {
         const {newPass,email} = req.body
         if(!(email && newPass)){
-            throw Error('Values are null')
+            return  res.status(400).json({
+                'err':'Values are null'
+                })
         }
         const existingData = await User.findOne({email})
         if(!existingData){
-            throw Error('User not exist ')
+            return  res.status(400).json({
+                'err':'User not exist'
+                })
+            
         }
-
         if(!existingData.verified){
-            throw Error('User not verified ')
+            return  res.status(400).json({
+                'err':'User not verified'
+                })
         }
         if(newPass.length<8){
-            throw Error('Pass to short ')
+            return  res.status(400).json({
+                'err':'Pass to short'
+                })
         }
         const hashnewPass = await hashData(newPass)
        const updateUser = await User.updateOne({email},{password:hashnewPass})
@@ -91,28 +112,75 @@ const resetPass = async (req,res)=>{
             message:"Your Password Reset Done"
         })
     } catch (error) {
-
-        throw error
+        res.status(400).json({
+            error
+            })
     }
 
 
 }
+const resetStudentPass = async (req,res)=>{
 
+    try {
+        const {newPass,email} = req.body
+        if(!(email && newPass)){
+            return  res.status(400).json({
+                'err':'Values are null'
+                })
+        }
+        const existingData = await Student_user.findOne({email})
+        if(!existingData){
+            return  res.status(400).json({
+                'err':'User not exist'
+                })
+            
+        }
+        if(!existingData.verified){
+            return  res.status(400).json({
+                'err':'User not verified'
+                })
+        }
+        if(newPass.length<8){
+            return  res.status(400).json({
+                'err':'Pass to short'
+                })
+        }
+        const hashnewPass = await hashData(newPass)
+       const updateUser = await Student_user.updateOne({email},{password:hashnewPass})
+        await deleteOTP({email})
+        res.status(200).json({
+            message:"Your Password Reset Done"
+        })
+    } catch (error) {
+        res.status(400).json({
+            error
+            })
+    }
+
+
+}
 const resetStudentPassWithOTP = async (req,res)=>{
 
     try {
         const {email} = req.body
         if(!email){
-            throw Error('Email Required')
+            return  res.status(400).json({
+                'err':'Email Required'
+                })
         }
 
         const existingData = await Student_user.findOne({email})
         if(!existingData){
-            throw Error('User not exist ')
+            return  res.status(400).json({
+                'err':'User not exist'
+                })
         }
 
         if(!existingData.verified){
-            throw Error('User not verified ')
+            return  res.status(400).json({
+                'err':'User not verified '
+                })
+            
         }
 
         const otpDetails = {
@@ -120,17 +188,19 @@ const resetStudentPassWithOTP = async (req,res)=>{
             subject: "Password Reset",
             message: "Verify your email with bellow code..!",
             duration: 1,
-        };
-        const createOtp =  sentOTP(otpDetails)
-        res.status(200).json({
+          };
+          const createOtp =  sentOTP(otpDetails)
+          res.status(200).json({
             message:"Reset Password OTP send on your mail box",
             createOtp
 
-        })
+          })
 
     } catch (error) {
 
-        throw error
+        res.status(400).json({
+            error
+            })
     }
 
 
@@ -138,39 +208,5 @@ const resetStudentPassWithOTP = async (req,res)=>{
 
 
 
-const resetStudentPass = async (req,res)=>{
 
-    try {
-        const {newPass,email} = req.body
-        if(!(email && newPass)){
-            throw Error('Values are null')
-        }
-        const existingData = await Student_user.findOne({email})
-        if(!existingData){
-            throw Error('User not exist ')
-        }
-
-        if(!existingData.verified){
-            throw Error('User not verified ')
-        }
-        if(newPass.length<8){
-            throw Error('Pass to short ')
-        }
-        const hashnewPass = await hashData(newPass)
-       const updateUser = await Student_user.updateOne({email},{password:hashnewPass})
-        await deleteOTP({email})
-        res.status(200).json({
-            message:"Your Password Reset Done",
-            updateUser
-        })
-    } catch (error) {
-
-        throw error
-    }
-
-
-}
-
-
-
-module.exports = {sendPassOTP,resetPass,resetStudentPass, resetStudentPassWithOTP };
+module.exports = {sendPassOTP,resetPass,resetStudentPass, resetStudentPassWithOTP,verifyOTP };

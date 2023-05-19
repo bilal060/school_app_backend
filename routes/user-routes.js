@@ -1,7 +1,7 @@
 const express = require('express');
 const { getAllusers, userSignUp, updateUser, authUser,deleteUser, getUser, UpdateUserSetting, currentUser,userLogin } = require('../Controller/user-controller');
 const auth = require('../Middleware/auth');
-const  upload  = require('../Middleware/uploadImage');
+const  {upload}  = require('../Middleware/uploadImage');
 const router = express.Router();
 
 

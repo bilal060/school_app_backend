@@ -8,7 +8,7 @@ const ImgSchema = new mongoose.Schema({
     ref: 'Student_user',
     required: true
   },
-  base64Image:{
+  image:{
     type:String
   }
 });

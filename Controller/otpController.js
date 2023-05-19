@@ -4,6 +4,7 @@ const generateOTP = require("../utils/generateOTP");
 const { hashData, verifyHashedData } = require("../Middleware/hashDataHandler");
 const sendEmail = require("../utils/sendEmail");
 const User = require("../Model/User");
+const Student_user = require("../Model/Student_user");
 const { AUTH_EMAIL } = process.env;
 
 
@@ -125,4 +126,40 @@ const resendOTP = async (req,res)=>{
 
 
 }
-module.exports = { sentOTP, verifyOTP, deleteOTP ,resendOTP};
+const resendStudentOTP = async (req,res)=>{
+
+  try {
+      const {email} = req.body
+      if(!email){
+          return res.status(400).json({
+            message:'Email Required'
+          }) 
+      }
+      const existingData = await Student_user.findOne({email})
+      if(!existingData){
+        return res.status(400).json({
+          message:'User not exist'
+        }) 
+      }
+      const otpDetails = {
+          email,
+          subject: "Verify User OTP",
+          message: "Verify your email with bellow code..!",
+          duration: 1,
+        };
+        const createOtp =  sentOTP(otpDetails)
+        res.status(200).json({
+          message:"OTP send on your mail box",
+
+        })
+
+  } catch (error) {
+
+   res.status(400).json({
+      message:error
+    }) 
+  }
+
+
+}
+module.exports = { sentOTP, verifyOTP, deleteOTP ,resendOTP,resendStudentOTP};

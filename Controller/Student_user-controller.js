@@ -174,8 +174,6 @@ const updateStudent_user = async (req, res, next) => {
   }
 };
 
-
-
 const currentUser = async (req, res, next) => {
   return res.status(200).json({
     res: req.user,
@@ -227,7 +225,7 @@ const authUser = (req, res) => {
 
 const uploadImg = async (req, res) => {
   try {
-    const { base64Image } = req.body;
+    const imagepath  = req.file?.path
     const studentUser = await Student_user.findById(req.params.id);
     const oldImage = await StudentUserImg.findOne({ user: studentUser._id });
     if (oldImage) {
@@ -235,18 +233,20 @@ const uploadImg = async (req, res) => {
     }
     const newImage = new StudentUserImg({
       user: studentUser._id,
-      base64Image: base64Image,
+      image: imagepath,
     });
     await newImage.save();
     res.status(200).json({
       message: "Image added to the database successfully.",
       studentUser,
+      newImage
     });
   } catch (err) {
     console.error(err);
     res.status(500).send("An error occurred while uploading the file.");
   }
 };
+
 
 exports.getAllStudent_user = getAllStudent_user;
 exports.studentSignUp = studentSignUp;

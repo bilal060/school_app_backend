@@ -25,6 +25,7 @@ const upload = multer({
         }
     })
 });
+
 const bookUpload = multer({
   limits: 500000000,
   storage: multer.diskStorage({
@@ -43,6 +44,26 @@ const bookUpload = multer({
   })
 });
 
-module.exports = upload;
-module.exports = bookUpload;
+const userUpload = multer({
+    limits: 500000000,
+    storage: multer.diskStorage({
+        destination: (req, file, cb) => {
+            cb(null, 'uploads/user');
+        },
+        filename: (req, file, cb) => {
+            const ext = MIME_TYPE_MAP[file.mimetype];
+            cb(null, uuidv4() + '.' + ext);
+        },
+        fileFilter: (req, file, cb) => {
+            const isValid = !!MIME_TYPE_MAP[file.mimetype];
+            const error = isValid ? null : new Error('Invalid mime type');
+            cb(error, isValid);
+        }
+    })
+});
+
+exports.upload = upload;
+exports.bookUpload = bookUpload;
+exports.userUpload = userUpload;
+
 

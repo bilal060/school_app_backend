@@ -8,11 +8,13 @@ const CreateStudent = async (req, res) => {
   try{
     let { fullName, grade, contactNo, emergencyContactNo, address ,} =
     req.body;
-  fullName = fullName.trim();
-  grade = grade.trim();
-  contactNo = contactNo.trim();
-  emergencyContactNo = emergencyContactNo.trim();
-  address = address.trim();
+    if(fullName, grade, contactNo, emergencyContactNo, address){
+      fullName = fullName.trim();
+      grade = grade.trim();
+      contactNo = contactNo.trim();
+      emergencyContactNo = emergencyContactNo.trim();
+      address = address.trim();
+    }
   if (!(fullName||grade || contactNo || emergencyContactNo || address)) {
     return res.status(500).json({
       message: "Internal server Error",
@@ -35,9 +37,9 @@ const CreateStudent = async (req, res) => {
   });
     
   }catch(err){
-  
-     throw err
-  
+  res.status(400).json({
+    err
+  })
   }
 
 };
