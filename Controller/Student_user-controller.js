@@ -146,6 +146,8 @@ const uploadImg =catchAsync( async (req, res,next) => {
     const imagepath = req.file?.path;
     console.log(req.file);
     console.log('req.file======================');
+    console.log(req);
+
     const studentUser = await Student_user.findById(req.params.id);
     if(!studentUser){
       return  next(new AppError('user Not Available in DB', 404));
