@@ -13,6 +13,8 @@ const createToken = require("../Middleware/createToken");
 const {
   verifyStudentEmailwithOTP,
 } = require("../Controller/verifyemailController");
+const catchAsync = require("../utils/catchAsync");
+const AppError = require("../utils/appError");
 
 const getAllStudent_user = async (req, res, next) => {
   let getStudent_users;
@@ -30,7 +32,7 @@ const getAllStudent_user = async (req, res, next) => {
     Student_user: getStudent_users,
   });
 };
-const studentSignUp = async (req, res, next) => {
+const studentSignUp = catchAsync(async (req, res, next) => {
   let {
     name,
     email,
@@ -41,17 +43,9 @@ const studentSignUp = async (req, res, next) => {
     city,
     dob,
   } = req.body;
-  name = name.trim();
-  email = email.trim();
-  password = password.trim();
-  phone1 = phone1.trim();
-  phone2 = phone2.trim();
-  state = state.trim();
-  city = city.trim();
-  dob = dob.trim();
   var emailFormat = /^[A-Z0-9+_.-]+@[A-Z0-9.-]+$/;
   if (email.match(emailFormat)) {
-    throw Error("invalid email");
+    return next(new AppError("Email not matched", 400));
   }
   if (
     !(name || email || password || phone1 || phone2 || state || city || dob)
@@ -87,19 +81,18 @@ const studentSignUp = async (req, res, next) => {
   return res.status(201).json({
     Student_user: user,
   });
-};
+});
 
-const Student_userLogin = async (req, res, err) => {
-  try {
+const Student_userLogin =catchAsync( async (req, res, next) => {
     const { email, password } = await req.body;
     const userFetch = await Student_user.findOne({ email });
     if (!userFetch) {
-      throw Error("Email Not Available in DB");
+      return  next(new AppError('Email Not Available in DB', 400));
     }
     const hashedpass = userFetch.password;
     const passwordMatch = await verifyHashedData(password, hashedpass);
     if (!passwordMatch || !userFetch.verified) {
-      res.status(401).json({ message: "Invalid credentials" });
+      return  next(new AppError('Invalid credentials', 400));
     } else {
       const image = await Image.findOne({ user: userFetch._id });
       const tokeData = { userId: userFetch._id, email };
@@ -111,32 +104,30 @@ const Student_userLogin = async (req, res, err) => {
         image,
       });
     }
-  } catch (error) {
-    throw error;
-  }
-};
+  })
+;
 
 const updateStudent_user = async (req, res, next) => {
-  try{
+  try {
     const userId = req.params.id;
-    let { name, email, phone1, phone2, state, city, dob, } = req.body;
+    let { name, email, phone1, phone2, state, city, dob } = req.body;
     const updateFields = { name, email, phone1, phone2, state, city, dob };
     const studentUser = await Student_user.findById(userId);
-    let newImage 
-    let oldImage
+    let newImage;
+    let oldImage;
     if (req.file?.path) {
-       oldImage = await StudentUserImg.findOne({ user: studentUser._id });
+      oldImage = await StudentUserImg.findOne({ user: studentUser._id });
       if (oldImage) {
         await StudentUserImg.deleteOne({ _id: oldImage._id });
       }
-     newImage = new StudentUserImg({
-      user: studentUser._id,
-      image: req.file?.path,
-    });
-    await newImage.save();
-  }else{
-     oldImage = await StudentUserImg.findOne({ user: studentUser._id });
-  }
+      newImage = new StudentUserImg({
+        user: studentUser._id,
+        image: req.file?.path,
+      });
+      await newImage.save();
+    } else {
+      oldImage = await StudentUserImg.findOne({ user: studentUser._id });
+    }
     const user = await Student_user.findByIdAndUpdate(userId, updateFields, {
       new: true,
     });
@@ -144,23 +135,21 @@ const updateStudent_user = async (req, res, next) => {
       return res.status(500).json({
         message: "User not found",
       });
-
     }
-    if(newImage){
+    if (newImage) {
       res.status(200).json({
-        'userFetch': user,
-        'image':newImage
+        userFetch: user,
+        image: newImage,
       });
-    }else{
+    } else {
       res.status(200).json({
-        'userFetch': user,
-        'image':oldImage
+        userFetch: user,
+        image: oldImage,
       });
     }
-   
-  }catch(err){
+  } catch (err) {
     res.status(400).json({
-      'err':err.message
+      err: err.message,
     });
   }
 };
@@ -216,7 +205,7 @@ const authUser = (req, res) => {
 
 const uploadImg = async (req, res) => {
   try {
-    const imagepath  = req.file?.path
+    const imagepath = req.file?.path;
     const studentUser = await Student_user.findById(req.params.id);
     const oldImage = await StudentUserImg.findOne({ user: studentUser._id });
     if (oldImage) {
@@ -230,14 +219,13 @@ const uploadImg = async (req, res) => {
     res.status(200).json({
       message: "Image added to the database successfully.",
       studentUser,
-      newImage
+      newImage,
     });
   } catch (err) {
     console.error(err);
     res.status(500).send("An error occurred while uploading the file.");
   }
 };
-
 
 exports.getAllStudent_user = getAllStudent_user;
 exports.studentSignUp = studentSignUp;

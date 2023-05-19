@@ -6,11 +6,11 @@ const moment = require('moment');
 const AlertSchema = new mongoose.Schema({
   Alert: {
     type: String,
-    required: true,
+    required: [true , 'please enter Alert'],
   },
   Location: {
     type: String,
-    required: true,
+    required: [true , 'please enter Location'],
   },
   createDate: {
     type: String,
@@ -22,11 +22,11 @@ const AlertSchema = new mongoose.Schema({
   },
   AlertReason: {
     type: String,
-    required: true,
+    required: [true , 'please enter AlertReason'],
   },
   AlertPrority: {
     type: String,
-    required: true,
+    required: [true , 'please enter AlertPrority'],
   },
 });
 

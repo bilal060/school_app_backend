@@ -1,54 +1,60 @@
 const { findByIdAndRemove, findById, findOne } = require("../Model/User");
 const Alerts = require("../Model/alert");
 const moment = require("moment");
-const catchAsync = require("../utils/catchAsync");
+const catchAsync = require('../utils/catchAsync')
+const AppError = require('../utils/appError')
 
-const CreateAlert = catchAsync(async (req, res) => {
-  let { Alert, Location, AlertReason, AlertPrority } = req.body;
-  if (Alert  && Location && AlertReason && AlertPrority) {
-    Alert = Alert.trim();
-    Location = Location.trim();
-    AlertReason = AlertReason.trim();
-    AlertPrority = AlertPrority.trim();
-  }else{
-    return res.status(400).json({
-      message: "please enter All values ",
-    });
-  }
-  const newDoc = new Alerts({
-    Alert,
+const CreateAlert =catchAsync( async (req, res ,next) => {
+  let { Alert, Location, AlertReason, AlertPrority }  =
+  req.body;
+const newDoc = await Student.create({
+  Alert,
     Location,
     AlertReason,
     AlertPrority,
-  });
-  newDoc.save()
-  if (!newDoc) {
-    return res.status(500).json({
-      message: "user Error",
-    });
-  }
-  return res.status(201).json({
-    savedAlert: newDoc,
-  });
+});
+if (!Poststudent) {
+  return  next(new AppError('somting Wrong', 400));
+}
+return res.status(201).json({
+  savedAlert: newDoc,
 });
 
-const getAlerts = catchAsync( async (req, res) => {
+});
+// const CreateAlert = catchAsync(async (req, res,next) => {
+//   const { Alert, Location, AlertReason, AlertPrority } = req.body;
+//   const newDoc = new Alerts({
+//     Alert,
+//     Location,
+//     AlertReason,
+//     AlertPrority,
+//   });
+//   newDoc.save()
+//   if (!newDoc) {
+//     return  next(new AppError('Somting wrong', 400));
+//   }
+//   return res.status(201).json({
+//     savedAlert: newDoc,
+//   });
+// });
+
+const getAlerts = catchAsync( async (req, res,next) => {
     const AllAlerts = await Alerts.find();
     res.status(200).json(AllAlerts);
     if(!AllAlerts){
-      res.status(400).json({ error: "Failed to get Alerts" });
+      return  next(new AppError('Failed to get Alerts', 400));
     }
 });
 
-const getAlert =catchAsync( async (req, res) => {
-   let Alert;
-    if (req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
-     Alert =await Alerts.findById(req.params.id);
-  }else{
-    return res.status(404).send('Id not Valid');
-  }
+const getAlert =catchAsync( async (req, res,next) => {
+  //  let Alert;
+  //   if (req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+    const Alert =await Alerts.findById(req.params.id);
+  // }else{
+  //   return res.status(404).send('Id not Valid');
+  // }
     if (!Alert) {
-      return res.status(404).send();
+      return  next(new AppError('not found Alerts', 404));
     }
     res.send(Alert);
 });

@@ -3,7 +3,7 @@ const { scheduler } = require("timers/promises");
 const autoIncrement = require('mongoose-auto-increment');
 const { v4: uuidv4 } = require('uuid');
 
-const connection = mongoose.createConnection('mongodb://localhost/myDatabase');
+const connection = mongoose.createConnection('mongodb://localhost/SchoolAppBackend');
 
 autoIncrement.initialize(connection);
 
@@ -46,13 +46,11 @@ studentSchema.plugin(autoIncrement.plugin, {
   incrementBy: 1,
 });
 
-// Define a virtual property to format the studentId field with leading zeros
 studentSchema.virtual('formattedStudentId').get(function () {
   return this.studentId.toString().padStart(6, '0');
   
 });
 
-// Override the toJSON() method to include the formattedStudentId property
 studentSchema.set('toJSON', {
   getters: true,
   virtuals: true,
