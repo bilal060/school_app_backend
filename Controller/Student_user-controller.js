@@ -148,7 +148,7 @@ const uploadImg =catchAsync( async (req, res,next) => {
     console.log('req.file======================');
 
     const imagepath = req.file?.path;
-    console.log('req.file======================');
+    console.log('req.file======================', imagepath);
 
     const studentUser = await Student_user.findById(req.params.id);
     if(!studentUser){
