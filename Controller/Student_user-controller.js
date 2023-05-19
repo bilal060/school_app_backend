@@ -92,7 +92,6 @@ const studentSignUp = async (req, res, next) => {
 const Student_userLogin = async (req, res, err) => {
   try {
     const { email, password } = await req.body;
-
     const userFetch = await Student_user.findOne({ email });
     if (!userFetch) {
       throw Error("Email Not Available in DB");
@@ -119,28 +118,20 @@ const Student_userLogin = async (req, res, err) => {
 
 const updateStudent_user = async (req, res, next) => {
   try{
-
-  
     const userId = req.params.id;
-    let { name, email, phone1, phone2, state, city, dob, base64Image } = req.body;
-    name = name.trim();
-    phone1 = phone1.trim();
-    phone2 = phone2.trim();
-    state = state.trim();
-    city = city.trim();
-    dob = dob.trim();
+    let { name, email, phone1, phone2, state, city, dob, } = req.body;
     const updateFields = { name, email, phone1, phone2, state, city, dob };
     const studentUser = await Student_user.findById(userId);
     let newImage 
     let oldImage
-    if (base64Image) {
+    if (req.file?.path) {
        oldImage = await StudentUserImg.findOne({ user: studentUser._id });
       if (oldImage) {
         await StudentUserImg.deleteOne({ _id: oldImage._id });
       }
      newImage = new StudentUserImg({
       user: studentUser._id,
-      base64Image: base64Image,
+      image: req.file?.path,
     });
     await newImage.save();
   }else{
@@ -155,7 +146,7 @@ const updateStudent_user = async (req, res, next) => {
       });
 
     }
-    if(base64Image){
+    if(newImage){
       res.status(200).json({
         'userFetch': user,
         'image':newImage
