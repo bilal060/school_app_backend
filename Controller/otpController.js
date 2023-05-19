@@ -28,7 +28,6 @@ const sentOTP = async ({ email, subject, message, duration = 1 }) => {
       expireAT: Date.now() + 360000 * duration,
     });
     const createOTP = await newOTP.save();
-    console.log(createOTP)
     return createOTP;
   } catch (error) {
     throw error;
