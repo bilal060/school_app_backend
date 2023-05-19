@@ -148,13 +148,6 @@ const uploadImg =catchAsync( async (req, res,next) => {
     if(!studentUser){
       return  next(new AppError('user Not Available in DB', 404));
     }
-    const oldImage = await StudentUserImg.findOne({ user: studentUser._id });
-    if(!oldImage){
-      return  next(new AppError('Not StudentUserImg in DB', 404));
-    }
-    if (oldImage) {
-      await StudentUserImg.deleteOne({ _id: oldImage._id });
-    }
     const newImage = new StudentUserImg({
       user: studentUser._id,
       image: imagepath,
