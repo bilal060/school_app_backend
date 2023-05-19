@@ -42,7 +42,7 @@ const studentSignUp = catchAsync(async (req, res, next) => {
   const userAvailable = await Student_user.findOne({ email });
   if (userAvailable) {
     return  next(new AppError('email already Exist', 409));
-  
+
   }
   const hashPassword = await hashData(password);
   const user = await Student_user.create({
@@ -144,6 +144,8 @@ const getStudet_user =catchAsync( async (req, res, next) => {
 });
 const uploadImg =catchAsync( async (req, res,next) => {
     const imagepath = req.file?.path;
+    console.log(req.file);
+    console.log('req.file======================');
     const studentUser = await Student_user.findById(req.params.id);
     if(!studentUser){
       return  next(new AppError('user Not Available in DB', 404));
