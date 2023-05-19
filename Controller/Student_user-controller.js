@@ -143,8 +143,8 @@ const getStudet_user =catchAsync( async (req, res, next) => {
   });
 });
 const uploadImg =catchAsync( async (req, res,next) => {
-    console.log(req.file);//this will be automatically set by multer
-    console.log(req.body);
+    console.log('req.file',req.file);//this will be automatically set by multer
+    console.log('req.body',req.body);
     console.log('req.file======================');
 
     const imagepath = req.file?.path;
