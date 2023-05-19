@@ -146,6 +146,7 @@ const uploadImg =catchAsync( async (req, res,next) => {
     console.log('req.file',req.file);//this will be automatically set by multer
     console.log('req.body',req.body);
     console.log('req.body',req.body.image);
+    console.log('req.body',req.body.image[0]);
     console.log('req.file======================');
 
     const imagepath = req.file?.path;
